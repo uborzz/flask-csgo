@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+  <title>Python/Flask Apps</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>CSGO Stats: Dofitos Bastardos</h1>
+    <p>Aquí se muestran algunas stats sacadas de la api de steam. Funciona con los miembros del grupo de steam Dofitos Bastardos.</p>
+    <p>El perfil ha de ser público para poder leer las estadísticas.</p>
+    <br>
+    <h4 class="text-center">Panel principal: Stats</h4>
+    <table class="table table-striped" id="principal">
+        <thead>
+            <tr>
+                <th class="text-center">Nick</th>
+                <th class="text-center">KD Ratio</th>
+                <th class="text-center">Rounds Won</th>
+                <th class="text-center">Headshots</th>
+                <th class="text-center">Accuracy</th>
+                <th class="text-center">Time played</th>
+                <th style="display:none">Steam ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in all_players %}
+            <tr>
+                <td class="text-center">{{member['nick']}}</td>
+                <td class="text-center">{{member['kd_ratio']}}</td>
+                <td class="text-center">{{member['rounds_won']}}</td>
+                <td class="text-center">{{member['headshots']}}</td>
+                <td class="text-center">{{member['accuracy']}}</td>
+                <td class="text-center">{{member['time_played']}}</td>
+                <td style="display:none">{{member['steam_id']}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
