@@ -16,16 +16,16 @@
             <tr>
                 <th class="text-center">Nick</th>
                 <th class="text-center">KD Ratio</th>
-                <th class="text-center">Rounds Won</th>
-                <th class="text-center">Headshots</th>
-                <th class="text-center">Accuracy</th>
-                <th class="text-center">Time played</th>
+                <th class="text-center">Rounds Won (%)</th>
+                <th class="text-center">Headshots (%)</th>
+                <th class="text-center">Accuracy (%)</th>
+                <th class="text-center">Time played (h)</th>
                 <th style="display:none">Steam ID</th>
             </tr>
         </thead>
         <tbody>
             {% for member in all_players %}
-            <tr>
+            <tr onclick="location='raw/{{member.steam_id}}'">
                 <td class="text-center">{{member['nick']}}</td>
                 <td class="text-center">{{member['kd_ratio']}}</td>
                 <td class="text-center">{{member['rounds_won']}}</td>

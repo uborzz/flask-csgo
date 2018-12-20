@@ -122,9 +122,9 @@ def home_page():
     players = dofitos_general_stats_db.find()
     return render_template('base.html', all_players=players)
 
-@app.route('/raw')
-def raw():
-    res = dofitos.find_one()
+@app.route('/raw/<member_id>')
+def raw(member_id):
+    res = dofitos.find_one({"playerstats.steamID": member_id})
     return Response(
         json_util.dumps(res),
         mimetype='application/json'
