@@ -130,11 +130,14 @@ def raw(member_id):
         mimetype='application/json'
     )
 
-
-# @app.route('/insert')
-# def insert_dummy():
-#     res = testdb.insert({"nombre": "insertado desde flask"})
-#     return "ok"
+@app.route('/dbtest')
+def insert_dummy():
+    t = datetime.now()
+    res = testdb.update_one({"nombre": "prueba insert"}, {"$set": {"date": t}}, upsert=True)
+    return Response(
+        json_util.dumps(res.raw_result),
+        mimetype='application/json'
+    )
 
 
 if __name__ == '__main__':
