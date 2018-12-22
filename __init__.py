@@ -35,12 +35,12 @@ def format_data(player_data):
         stats = dict()
         for element in player_data['playerstats']['stats']:
             stats[element['name']] = element['value']
-        vista['kd_ratio'] = round(stats['total_kills'] / stats['total_deaths'], 2)
-        vista['total_win'] = round(100 * (stats['total_matches_won']) / (stats['total_matches_played']), 2)
+        vista['kd_ratio'] = round(float(stats['total_kills']) / stats['total_deaths'], 2)
+        vista['total_win'] = round(100 * float(stats['total_matches_won']) / stats['total_matches_played'], 2)
         vista['time_played'] = int(stats['total_time_played'] / 3600)
-        vista['rounds_won'] = round(100 * (stats['total_wins']) / (stats['total_rounds_played']), 2)
-        vista['headshots'] = round(100 * (stats['total_kills_headshot']) / (stats['total_kills']), 2)
-        vista['accuracy'] = round(100 * (stats['total_shots_hit']) / (stats['total_shots_fired']), 2)
+        vista['rounds_won'] = round(100 * float(stats['total_wins']) / stats['total_rounds_played'], 2)
+        vista['headshots'] = round(100 * float(stats['total_kills_headshot']) / stats['total_kills'], 2)
+        vista['accuracy'] = round(100 * float(stats['total_shots_hit']) / stats['total_shots_fired'], 2)
         try:
             dofitos_general_stats_db.replace_one({"steam_id": vista['steam_id']}, vista, upsert=True)
             print("OK")
@@ -138,7 +138,6 @@ def insert_dummy():
         json_util.dumps(res.raw_result),
         mimetype='application/json'
     )
-
 
 if __name__ == '__main__':
     app.run()

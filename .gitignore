@@ -2,3 +2,4 @@ db_folder
 venv
 .*
 _*
+!__init__.py
