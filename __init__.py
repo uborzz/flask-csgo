@@ -7,6 +7,7 @@ from flask import Flask, render_template, Response
 from pymongo import MongoClient
 from bson import json_util
 import _configs as cfg
+import json
 
 app = Flask(__name__)
 
@@ -119,8 +120,10 @@ def get_page(kwargs):
 
 @app.route('/')
 def home_page():
-    players = dofitos_general_stats_db.find()
-    return render_template('base.html', all_players=players)
+    players = list(dofitos_general_stats_db.find())
+    # names tendrá solamente una lista simple, los diccionarios de dentro tienen tipos de datos de mongo
+    # no le mola al jinja para pasar la variable al javascript.
+    return render_template('base.html', all_players=players, names=[member['nick'] for member in players])
 
 @app.route('/raw/<member_id>')
 def raw(member_id):

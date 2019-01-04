@@ -1,16 +1,28 @@
 {% extends "layout.html" %}
 
 {% block heading %}
-  <title>Python/Flask Apps</title>
+    <title>Python/Flask Apps</title>
+
 {% endblock %}
 
 {% block content %}
+
+<script type="text/javascript">
+    myFunc({{names|tojson}})
+</script>
+
 <div class="container">
     <h1>CSGO Stats: Dofitos Bastardos</h1>
     <p>Aquí se muestran algunas stats sacadas de la api de steam. Funciona con los miembros del grupo de steam Dofitos Bastardos.</p>
     <p>El perfil ha de ser público para poder leer las estadísticas. <a href="https://support.steampowered.com/kb_article.php?ref=4113-YUDH-6401" target="_blank">¿Cómo hacer el perfil público?</a></p>
     <br>
     <h4 class="text-center">Panel principal: Stats</h4>
+    <input type="text" id="cont" value="HOLA">
+    <div id="boxes">
+        {% for member in names %}
+        <input type="checkbox" name="{{member}}" value="{{member}}" checked> {{member}}<br>
+        {% endfor %}
+    </div>
     <table class="table table-striped" id="principal">
         <thead>
             <tr>
