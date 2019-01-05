@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime
 from pprint import pprint
 import requests
@@ -7,11 +8,15 @@ from flask import Flask, render_template, Response
 from pymongo import MongoClient
 from bson import json_util
 import _configs as cfg
-import json
 
 app = Flask(__name__)
+update_on_launch = True
 
-# db info
+
+#############################################################
+    # DB_INFO
+#############################################################
+
 client = MongoClient(cfg.mongo_uri, maxPoolSize=50, wtimeout=2000)
 db = client['steam']  # database
 dofitos = db['dofitos']  # collection
@@ -104,8 +109,9 @@ def update_database_data():
             print("request ha fallado")
 
 
-# update_database_data()
-scheduler.add_job(update_database_data, "interval", hours=6)
+if update_on_launch:
+    update_database_data()
+scheduler.add_job(update_database_data, "interval", hours=12)
 
 
 #############################################################
