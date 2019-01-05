@@ -8,10 +8,6 @@ document.all_members = null
 document.selected_members = [] //pendiente guardar en cookie/local storage la seleccion
 document.string_members = ""
 
-function myFunc(vars) {
-    document.all_members = vars
-}
-
 function filterByNames () {
     $('#principal').DataTable().column(0).search($('#cont').val(), true, false).draw();
 }
@@ -34,5 +30,3 @@ $( document ).ready(function() {
     });
 });
 
-
-console.log("CARAPOLLA")

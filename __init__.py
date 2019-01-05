@@ -42,7 +42,7 @@ def format_data(player_data):
         stats = dict()
         for element in player_data['playerstats']['stats']:
             stats[element['name']] = element['value']
-        vista['kd_ratio'] = round(float(stats['total_kills']) / stats['total_deaths'], 2)
+        vista['kd_ratio'] = round(float(stats['total_kills']) / stats['total_deaths'], 3)
         vista['total_win'] = round(100 * float(stats['total_matches_won']) / stats['total_matches_played'], 2)
         vista['time_played'] = int(stats['total_time_played'] / 3600)
         vista['rounds_won'] = round(100 * float(stats['total_wins']) / stats['total_rounds_played'], 2)
@@ -130,9 +130,8 @@ def get_page(kwargs):
 @app.route('/')
 def home_page():
     players = list(dofitos_general_stats_db.find())
-    # names tendrá solamente una lista simple, los diccionarios de dentro tienen tipos de datos de mongo
-    # no le mola al jinja para pasar la variable al javascript.
-    return render_template('base.html', all_players=players, names=[member['nick'] for member in players])
+    names = sorted([member['nick'] for member in players], key=lambda s: s.lower())
+    return render_template('base.html', all_players=players, names=names)
 
 @app.route('/raw/<member_id>')
 def raw(member_id):

@@ -2,21 +2,9 @@
 
 {% block heading %}
     <title>Python/Flask Apps</title>
-
 {% endblock %}
 
 {% block content %}
-
-<script type="text/javascript">
-    document.all_members = {{names|tojson}}.sort(function (a, b) {
-        let x = a.toLowerCase(),
-            y = b.toLowerCase()
-        if (x < y) {return -1}
-        if (y < x) {return 1}
-        return 0
-    })
-</script>
-
 <div class="container">
     <h1>CSGO Stats: Dofitos Bastardos</h1>
     <p>Aquí se muestran algunas stats sacadas de la api de steam. Funciona con los miembros del grupo de steam Dofitos Bastardos.</p>
@@ -24,21 +12,6 @@
     <br>
     <h4 class="text-center">Panel principal: Stats</h4>
     <div class="row">
-        <div class="col-sm-2">
-            <input type="text" id="cont" value="" hidden>
-            <div id="boxes">
-                {% for member in names %}
-                 <div class="checkbox">
-                    <label style="font-size: 1em">
-                        <input name="names" type="checkbox" value="{{member}}" checked>
-                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-                        {{member}}
-                    </label>
-                </div>
-                <!--<input type="checkbox" name="names" value="{{member}}" checked> {{member}}<br>-->
-                {% endfor %}
-            </div>
-        </div>
         <div class="col-sm-10">
             <table class="table table-striped" id="principal">
                 <thead>
@@ -66,6 +39,20 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+        <div class="col-sm-2">
+            <input type="text" id="cont" value="" hidden>
+            <div id="boxes">
+                {% for member in names %}
+                 <div class="checkbox">
+                    <label style="font-size: 1em">
+                        <input name="names" type="checkbox" value="{{member}}" checked>
+                        <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                        {{member}}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
