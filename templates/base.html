@@ -8,7 +8,13 @@
 {% block content %}
 
 <script type="text/javascript">
-    document.all_members = {{names|tojson}}
+    document.all_members = {{names|tojson}}.sort(function (a, b) {
+        let x = a.toLowerCase(),
+            y = b.toLowerCase()
+        if (x < y) {return -1}
+        if (y < x) {return 1}
+        return 0
+    })
 </script>
 
 <div class="container">

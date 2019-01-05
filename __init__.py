@@ -132,7 +132,7 @@ def home_page():
     players = list(dofitos_general_stats_db.find())
     # names tendrá solamente una lista simple, los diccionarios de dentro tienen tipos de datos de mongo
     # no le mola al jinja para pasar la variable al javascript.
-    return render_template('base.html', all_players=players, names=sorted([member['nick'] for member in players]))
+    return render_template('base.html', all_players=players, names=[member['nick'] for member in players])
 
 @app.route('/raw/<member_id>')
 def raw(member_id):
