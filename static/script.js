@@ -5,7 +5,7 @@ $(document).ready(function() {
 })
 
 document.all_members = null
-document.selected_members = []
+document.selected_members = [] //pendiente guardar en cookie/local storage la seleccion
 document.string_members = ""
 
 function myFunc(vars) {
@@ -13,19 +13,25 @@ function myFunc(vars) {
     return vars
 }
 
-$( document ).ready(function() {
-    console.log( "ready!" )
+function filterByNames () {
+    $('#principal').DataTable().column(0).search($('#cont').val(), true, false).draw();
+}
 
-    // SEGUIR AKI
+$( document ).ready(function() {
+    console.log( "document ready!" )
+
     $('#boxes').on('change', function(){
-        document.selected_members = []
-        $("#boxes").each(function(){
+        var selected = []
+
+        $.each($("input[name='names']:checked"), function(){
             console.log($(this).val())
-            document.selected_members.push($(this).val());
+            selected.push($(this).val());
         });
-        document.string_members = document.selected_members.toString()
+
+        document.string_members = selected.join("|")
         $('#cont').val(document.string_members)
         console.log(document.string_members)
+        filterByNames()
     });
 });
 
