@@ -10,7 +10,6 @@ document.string_members = ""
 
 function myFunc(vars) {
     document.all_members = vars
-    return vars
 }
 
 function filterByNames () {
