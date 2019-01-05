@@ -8,6 +8,7 @@ from flask import Flask, render_template, Response
 from pymongo import MongoClient
 from bson import json_util
 import _configs as cfg
+from threading import Thread
 
 app = Flask(__name__)
 update_on_launch = True
@@ -110,7 +111,9 @@ def update_database_data():
 
 
 if update_on_launch:
-    update_database_data()
+    worker = Thread(target=update_database_data)
+    worker.setDaemon(True)
+    worker.start()
 scheduler.add_job(update_database_data, "interval", hours=12)
 
 
