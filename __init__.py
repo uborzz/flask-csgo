@@ -224,12 +224,16 @@ def upload_games():
 
     except Exception as e:
         print(str(e))
-        return Response(response=json.dumps({"result": "error", "description": "Shit happend. FU."}), status=400, mimetype='application/json')
+        return Response(response=json.dumps({"result": "error", "description": "Shit happend. FU.", "back_exception": str(e)}), status=400, mimetype='application/json')
 
 @app.route('/match')
 def get_raw_competitives_matches():
     matches = list(competitives.find())
     return jsonify(matches)
+
+@app.route('/help_upload')
+def help_subir_matches():
+    return render_template('subir_matches.html')
 
 @app.route('/matchbson')
 def get_raw_competitives_matches2():
@@ -241,3 +245,7 @@ def get_raw_competitives_matches2():
 
 if __name__ == '__main__':
     app.run()
+
+# if __name__ == '__main__':
+#     app.run(ssl_context = 'adhoc')
+

@@ -56,3 +56,8 @@
 .radio label input[type="radio"]:disabled + .cr {
     opacity: .5;
 }
+
+.seguida {
+    margin-top: 4px;
+    margin-bottom: 32px;
+}

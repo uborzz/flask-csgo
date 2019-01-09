@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+    <title>Python/Flask Apps</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>CSGO Stats: Dofitos Bastardos</h1>
+    <h3> Enviar partidas - Instrucciones para subnormales. </h3>
+    <p> Tras haber descargado y activado <a href="https://chrome.google.com/webstore/detail/csgo-competitive-matchine/nfjabioikcikngoihhfenimoapadlikd" target="_blank">el plugin de Chrome</a>...</p>
+    <p> Acceder a la <a href="https://steamcommunity.com/" target="_blank">web de Steam</a> y Logear </p>
+    <p> Ir a tu perfil, clickando por ejemplo en tu portrait y seleccionar Games del panel derecho.</p>
+    <img class="seguida" src="../static/images/gpd-1.png" alt="Instrucciones 1">
+    <p> Desplegar la personal game data en el item de Counter Strike: Global Offensive.</p>
+    <img class="seguida" src="../static/images/gpd-2.png" alt="Instrucciones 2">
+    <p> Ir a la pestaña Competitive. Si habéis instalado bien mi plugin, aparecerán unos botones extra.</p>
+    <img class="seguida" src="../static/images/gpd-3.png" alt="Instrucciones 3">
+    <p>Una vez en la pestaña con la información de las competitivas, el modo de uso sería:</p>
+    <ul>
+    <li>Clickar en el primer botón (Load whole match history) hasta cargar todas las partidas. Si se quiere parar antes, dar al segundo botón (Stop scanning).</li>
+    <li>Asegurarse de que el endpoint y la pass son correctos, por defecto ya está apuntando a este servidor, y nuestra password la tendréis en el telegram.</li>
+    <li>Por último, pulsar el tercer botón (Send to endpoint).</li>
+    </ul>
+    <p> Nota provisional: Ahora mismo no se recibe respuesta de cómo ha ido el envío al servidor, se está trabajando en ello, solamente podéis mirar en <a href="/competitive" target="_blank">la pestaña competitive</a> si se han añadido las partidas o no.</p>
+<br>
+</div>
+{% endblock %}
