@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+    <title>Python/Flask Apps</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>CSGO Stats: Dofitos Bastardos</h1>
+    <p> Trabajando en ello... </p>
+    <p> Partidas actualmente en el sistema: {{total_partidas}}.</p>
+    <br>
+    <h4 class="text-center">Panel Competitivas</h4>
+    <div class="row">
+        <!--<div class="col-sm-10">-->
+            <!--<table class="table table-striped" id="principal">-->
+                <!--<thead>-->
+                    <!--<tr>-->
+                        <!--<th class="text-center">Nick</th>-->
+                        <!--<th class="text-center">KD Ratio</th>-->
+                        <!--<th class="text-center">Rounds Won (%)</th>-->
+                        <!--<th class="text-center">Headshots (%)</th>-->
+                        <!--<th class="text-center">Accuracy (%)</th>-->
+                        <!--<th class="text-center">Time played (h)</th>-->
+                        <!--<th style="display:none">Steam ID</th>-->
+                    <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                    <!--{% for member in all_players %}-->
+                    <!--<tr onclick="location='raw/{{member.steam_id}}'">-->
+                        <!--<td class="text-center">{{member['nick']}}</td>-->
+                        <!--<td class="text-center">{{member['kd_ratio']}}</td>-->
+                        <!--<td class="text-center">{{member['rounds_won']}}</td>-->
+                        <!--<td class="text-center">{{member['headshots']}}</td>-->
+                        <!--<td class="text-center">{{member['accuracy']}}</td>-->
+                        <!--<td class="text-center">{{member['time_played']}}</td>-->
+                        <!--<td style="display:none">{{member['steam_id']}}</td>-->
+                    <!--</tr>-->
+                    <!--{% endfor %}-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</div>-->
+        <!--<div class="col-sm-2">-->
+            <!--<input type="text" id="cont" value="" hidden>-->
+            <!--<div id="boxes">-->
+                <!--{% for member in names %}-->
+                 <!--<div class="checkbox">-->
+                    <!--<label style="font-size: 1em">-->
+                        <!--<input name="names" type="checkbox" value="{{member}}" checked>-->
+                        <!--<span class="cr"><i class="cr-icon fa fa-check"></i></span>-->
+                        <!--{{member}}-->
+                    <!--</label>-->
+                <!--</div>-->
+                <!--{% endfor %}-->
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+</div>
+{% endblock %}
