@@ -4,12 +4,14 @@
     {% block heading %}{% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
     <link type="text/css" rel="stylesheet" href="../static/styles.css">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf8" src="{{url_for('static', filename='script.js')}}"></script>
 
     <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/plug-ins/preview/searchPane/dataTables.searchPane.min.css">-->
@@ -17,26 +19,20 @@
 </head>
 <body>
 
-<nav class="navbar navbar-inverse" role="navigation">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">CSGO Stats: Dofitos Bastardos!</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-csgo" aria-controls="navbar-csgo" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="/">CSGO Stats: Dofitos Bastardos!</a>
-    </div>
 
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-          <li style="font-size: 1.4em !important;"><a href="/">General</a></li>
-          <li style="font-size: 1.4em !important;"><a href="/competitive">Competitives</a></li>
+    <div class="collapse navbar-collapse" id="navbar-csgo">
+      <ul class="nav navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item"><a class="nav-link" href="/">General</a></li>
+          <li class="nav-item"><a class="nav-link" href="/competitive">Competitives</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li style="font-size: 1.4em !important;"><a href="http://apps.uborzz.es" target="_blank">Wow flask Apps</a></li>
-        <li style="font-size: 1.4em !important;"><a href="http://uborzz.es" target="_blank">blog: la caja loca</a></li>
+        <li class="nav-item"><a class="nav-link" href="http://apps.uborzz.es" target="_blank">Wow flask Apps</a></li>
+        <li class="nav-item"><a class="nav-link" href="http://uborzz.es" target="_blank">blog: la caja loca</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
