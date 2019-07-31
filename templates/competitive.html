@@ -6,9 +6,12 @@
 
 {% block content %}
 
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
 <script type="text/javascript">
     var partidas_text = {{partidas|tojson}}
     document.partidas = JSON.parse(partidas_text)
+    document.players= JSON.parse({{players_jsondump|tojson}})
 </script>
 
 <div class="container">
@@ -22,6 +25,121 @@
         <p>Trabajando en ello... Actualmente se pueden enviar partidas con nuestro plugin, pero no se recibe respuesta del estado. Si quereis mandar partidas, una forma de ver si se han insertado es mediante el contador que se ve aquí abajo. Si tras enviar partidas este valor ha cambiado, se puede entender que habéis añadido partidas correctamente.</p>
       </div>
     </div>
+
+  <div class="row">
+
+    <div class="col-sm-2">
+      <h2 class="text-center">Players</h2>
+      <input type="text" id="cont" value="" hidden>
+      <div id="boxes_comp">
+        {% for member in players %}
+        <div class="checkbox">
+          <label style="font-size: 1em">
+              <input name="names_comp" type="checkbox" value="{{member.steam_id}}" checked>
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{member.nick}}
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-dark">
+          <input type="radio" name="radio_modo" id="option_all" autocomplete="off" checked> Any Selected
+        </label>
+        <label class="btn btn-dark active">
+          <input type="radio" name="radio_modo" id="option_any" autocomplete="off"> Selected Only
+        </label>
+      </div>
+    </div>
+
+    <div class="col-sm-3">
+
+      <h2 class="text-center">Maps</h2>
+      <input type="text" id="maps" value="" hidden>
+      <div id="boxes_maps">
+        {% for map in maps %}
+        <div class="checkbox">
+          <label style="font-size: 1em">
+              <input name="names_maps" type="checkbox" value="{{map}}" checked>
+              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+              {{map}}
+          </label>
+        </div>
+        {% endfor %}
+
+        <h3 class="text-center">Time</h3>
+        <p>Time filter</p>
+
+        <div class="container">
+            <div class="row">
+                <div class='col'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                 <script type="text/javascript">
+                    $(function () {
+                        $('#datetimepicker1').datetimepicker();
+                    });
+                </script>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class='col'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker2'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    $(function () {
+                        $('#datetimepicker2').datetimepicker();
+                    });
+                </script>
+            </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col text-center">
+            <h2 class="text-center">More</h2>
+            <button type="button" class="btn btn-dark disabled text-center" data-toggle="modal" data-target="#exampleModal">
+              See matches
+            </button>
+
+            <button type="button" class="btn btn-dark disabled text-center">
+              Steam IDs
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-sm-7">
+
+      <div id="chartContainer" class="text-center" style="height: 250px; width: 100%;"></div>
+      <h4>DEBUG</h4>
+      <p>{{players}}</p>
+
+    </div>
+
+
+
+
+  </div>
 
     <!-- Grid row -->
   <div class="row">
