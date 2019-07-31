@@ -15,11 +15,10 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-update_on_launch = False
-
+update_on_launch = True
 
 #############################################################
-    # DB_INFO
+# DB_INFO
 #############################################################
 
 client = MongoClient(cfg.mongo_uri, maxPoolSize=50, wtimeout=2000)
@@ -32,13 +31,13 @@ competitives = db['competitives']  # collection
 competitives_uploaders = db['competitives_uploaders']  # collection
 testdb = db['test']  # collection
 
-
 #############################################################
-    # Scheduler routine
+# Scheduler routine
 #############################################################
 
 scheduler = BackgroundScheduler()
 scheduler.start()
+
 
 def format_data(player_data):
     try:
@@ -79,7 +78,7 @@ def update_database_data():
             members_ids = data["memberList"]["members"]["steamID64"]
             print(members_ids)
             try:
-                group.replace_one({}, {"members": members_ids}, upsert=True)
+                group.replace_one({"_id": "clan_members"}, {"members": members_ids}, upsert=True)
             except:
                 print("insert failed")
         else:
@@ -88,9 +87,11 @@ def update_database_data():
     except:
         print("group call failed, tratando de tirar de previo.")
         try:
-            members_ids = group.find_one()["members"]
-        except:
+            members_ids = group.find_one({"_id": "clan_members"})["members"]
+        except TypeError:
+            members_ids
             print("find failed. members empty.")
+            members_ids = list()
 
     # ID - "76" + (parseInt(campo-mini) + 561197960265728)
     for member in members_ids:
@@ -128,18 +129,55 @@ def update_database_data():
             print("request ha fallado")
 
 
+def update_dofitos_found_in_competitives():
+    """
+    Exploramos partidas competitivas en el sistema y nos quedamos con el nick más reciente y el id_steam
+    de las coincidencias con la lista de miembros del clan de steam, tengan o no abierto el perfil.
+    """
+    matches = competitives.find({}, {"players_team1.nick": 1, "players_team2.nick": 1, "players_team1.steam_id": 1,
+                                     "players_team2.steam_id": 1, "local_team": 1}).sort("_id", -1)  # Descending
+    matches_counter = matches.count()
+    try:
+        clan_members_ids = group.find_one({"_id": "clan_members"})["members"]
+    except TypeError:
+        clan_members_ids = list()
+
+    members_in_competitives = list()
+    steam_ids_aux = list()
+    for match in matches:
+        team_text = "players_team" + str(match['local_team'])
+        for player in match[team_text]:
+            if player['steam_id'] in clan_members_ids:
+                if player['steam_id'] not in steam_ids_aux:  # append only once
+                    members_in_competitives.append(player)
+                    steam_ids_aux.append(player['steam_id'])
+
+    group.replace_one({"_id": "members_in_competitives"},
+                      {"members": members_in_competitives, "last_updated": datetime.now(),
+                       "matches_last_update": matches_counter}, upsert=True)
+
+    print(members_in_competitives)
+
+
 if update_on_launch:
-    worker = Thread(target=update_database_data)
-    worker.setDaemon(True)
-    worker.start()
+    worker_data = Thread(target=update_database_data)
+    worker_data.setDaemon(True)
+    worker_data.start()
+
+    worker_players_competitive = Thread(target=update_dofitos_found_in_competitives)
+    worker_players_competitive.setDaemon(True)
+    worker_players_competitive.start()
+
 scheduler.add_job(update_database_data, "interval", hours=12)
+scheduler.add_job(update_dofitos_found_in_competitives, "interval", hours=24)
 
 
 #############################################################
-    # Services/DB methods
+# Services/DB methods
 #############################################################
 def get_page(kwargs):
     pass
+
 
 def insert_competitive_matches(matches_list):
     for match in matches_list:
@@ -157,7 +195,7 @@ def insert_competitive_matches(matches_list):
 
 
 #############################################################
-    # Http API
+# Http API
 #############################################################
 
 @app.route('/')
@@ -166,10 +204,14 @@ def home_page():
     names = sorted([member['nick'] for member in players], key=lambda s: s.lower())
     return render_template('base.html', all_players=players, names=names)
 
+
 @app.route('/competitive')
 def competitive_page():
-    total_partidas = competitives.find({}, {"nick": 1, "_id": 0}).count()
-    return render_template('competitive.html', total_partidas=total_partidas)
+    # total_partidas = competitives.find({}, {"nick": 1, "_id": 0}).count()
+    partidas = competitives.find()
+    total_partidas = partidas.count()
+    return render_template('competitive.html', total_partidas=total_partidas, partidas=json_util.dumps(partidas))
+
 
 @app.route('/raw/<member_id>')
 def raw(member_id):
@@ -179,6 +221,7 @@ def raw(member_id):
         mimetype='application/json'
     )
 
+
 @app.route('/dbtest')
 def insert_dummy():
     t = datetime.now()
@@ -187,6 +230,7 @@ def insert_dummy():
         json_util.dumps(res.raw_result),
         mimetype='application/json'
     )
+
 
 @app.route('/gettest')
 def get_test():
@@ -209,6 +253,7 @@ def post_test():
         mimetype='application/json'
     )
 
+
 @app.route('/uploadgames', methods=['POST'])
 def upload_games():
     try:
@@ -224,16 +269,21 @@ def upload_games():
 
     except Exception as e:
         print(str(e))
-        return Response(response=json.dumps({"result": "error", "description": "Shit happend. FU.", "back_exception": str(e)}), status=400, mimetype='application/json')
+        return Response(
+            response=json.dumps({"result": "error", "description": "Shit happend. FU.", "back_exception": str(e)}),
+            status=400, mimetype='application/json')
+
 
 @app.route('/match')
 def get_raw_competitives_matches():
     matches = list(competitives.find())
     return jsonify(matches)
 
+
 @app.route('/help_upload')
 def help_subir_matches():
     return render_template('subir_matches.html')
+
 
 @app.route('/matchbson')
 def get_raw_competitives_matches2():
@@ -243,9 +293,9 @@ def get_raw_competitives_matches2():
         mimetype='application/json'
     )
 
+
 if __name__ == '__main__':
     app.run()
 
 # if __name__ == '__main__':
 #     app.run(ssl_context = 'adhoc')
-

@@ -5,12 +5,23 @@
 {% endblock %}
 
 {% block content %}
+
+<script type="text/javascript">
+    var partidas_text = {{partidas|tojson}}
+    document.partidas = JSON.parse(partidas_text)
+</script>
+
 <div class="container">
     <h1>CSGO Stats: Competitivas</h1>
-    <br>
-    <h2>Estado </h2>
-    <p>Trabajando en ello... Actualmente se pueden enviar partidas con nuestro plugin, pero no se recibe respuesta del estado. Si quereis mandar partidas, una forma de ver si se han insertado es mediante el contador que se ve aquí abajo. Si tras enviar partidas este valor ha cambiado, se puede entender que habéis añadido partidas correctamente.</p>
-    <br>
+    <!--{{partidas}}-->
+    <!-- Grid row -->
+    <div class="row mb-4">
+      <!-- Grid column -->
+      <div class="col">
+        <h2 class="font-weight-bold">Estado</h2>
+        <p>Trabajando en ello... Actualmente se pueden enviar partidas con nuestro plugin, pero no se recibe respuesta del estado. Si quereis mandar partidas, una forma de ver si se han insertado es mediante el contador que se ve aquí abajo. Si tras enviar partidas este valor ha cambiado, se puede entender que habéis añadido partidas correctamente.</p>
+      </div>
+    </div>
 
     <!-- Grid row -->
   <div class="row">
@@ -76,7 +87,8 @@
         <!-- Grid column -->
         <div class="col">
           <h4 class="font-weight-bold"> <i class="fa fa-comment"></i> Nota!</h4>
-          <p>Si no activaste tu id de perfil de steam, tendrías que acceder a https://steamcommunity.com/profiles/&ltTU-STEAM-ID&gt/gcpd/730/?tab=matchhistorycompetitive </p>
+          <p>Si no activaste tu id de perfil de steam, tendrías que acceder a:</p>
+          <p>https://steamcommunity.com/profiles/&ltTU-STEAM-ID&gt/gcpd/730/?tab=matchhistorycompetitive</p>
         </div>
       </div>
       <div class="row mb-3">
