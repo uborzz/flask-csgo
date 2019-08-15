@@ -125,7 +125,7 @@ def update_database_data():
                     print("upsert dofitos ha fallado")
             else:
                 print("NOK from get requests")
-        except Exception as e:
+        except:
             print("request ha fallado")
 
 

@@ -25,81 +25,115 @@
         <h2 class="font-weight-bold">Estado</h2>
         <p>Trabajando en ello... Actualmente se pueden enviar partidas con nuestro plugin, pero no se recibe respuesta del estado. Si quereis mandar partidas, una forma de ver si se han insertado es mediante el contador que se ve aquí abajo. Si tras enviar partidas este valor ha cambiado, se puede entender que habéis añadido partidas correctamente.</p>
         <p>update 1. parte de subir partidas sigue igual. trabajando en front, modificada base datos para empezar a traer info para mostrar</p>
+        <p>update 2. parte de subir partidas sigue igual. probando otro tipo gráficas</p>
       </div>
     </div>
 
   <div class="row">
 
-    <div class="col-sm-2">
-      <h2 class="text-center">Players</h2>
-      <input type="text" id="cont" value="" hidden>
-      <div id="boxes_comp">
-        {% for member in players %}
-        <div class="checkbox">
-          <label style="font-size: 1em">
-              <input name="names_comp" type="checkbox" value="{{member.steam_id}}" checked>
-              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-              {{member.nick}}
-          </label>
-        </div>
-        {% endfor %}
-      </div>
-      <div id="botones_modo" class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-dark">
-          <input type="radio" name="radio_modo" id="option_any" autocomplete="off" checked> ANY Selected
-        </label>
-        <label class="btn btn-dark active">
-          <input type="radio" name="radio_modo" id="option_all" autocomplete="off"> ALL must match
-        </label>
-      </div>
-    </div>
-
-    <div class="col-sm-2">
-
-      <h2 class="text-center">Maps</h2>
-      <input type="text" id="maps" value="" hidden>
-      <div id="boxes_maps">
-        {% for map in maps %}
-        <div class="checkbox">
-          <label style="font-size: 1em">
-              <input name="names_maps" type="checkbox" value="{{map}}" checked>
-              <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-              {{map}}
-          </label>
-        </div>
-        {% endfor %}
-
-        <h3 class="text-center">Time</h3>
-        <p>to-do: Time bars here</p>
+    <div class="col-sm-4">
 
         <div class="row">
-          <div class="col text-center">
-            <h2 class="text-center">More</h2>
-            <button type="button" class="btn btn-dark disabled text-center" data-toggle="modal" data-target="#exampleModal">
-              Matches
-            </button>
 
-            <button type="button" class="btn btn-dark text-center" onclick="showIds()">
-              Steam IDs
-            </button>
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="col">
+                  <h2 class="text-center">Players</h2>
+                  <input type="text" id="cont" value="" hidden>
+                  <div id="boxes_comp">
+                    {% for member in players %}
+                    <div class="checkbox">
+                      <label style="font-size: 1em">
+                          <input name="names_comp" type="checkbox" value="{{member.steam_id}}" checked>
+                          <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                          {{member.nick}}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col text-center">
+                      <h2 class="text-center">Modo Filtrado</h2>
+                      <div id="botones_modo" class="btn-group-vertical btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-dark">
+                          <input type="radio" name="radio_modo" id="option_any" autocomplete="off" checked> ANY Selected
+                        </label>
+                        <label class="btn btn-dark active">
+                          <input type="radio" name="radio_modo" id="option_all" autocomplete="off"> ALL must match
+                        </label>
+                        <label class="btn btn-dark active">
+                          <input type="radio" name="radio_modo" id="option_exc" autocomplete="off"> ONLY selected
+                        </label>
+                      </div>
+                  </div>
+              </div>
+            </div>
 
-          </div>
+            <div class="col-sm-6">
+
+              <div class="row">
+                <div class="col">
+                  <h2 class="text-center">Maps</h2>
+                  <input type="text" id="maps" value="" hidden>
+                  <div id="boxes_maps">
+                    {% for map in maps %}
+                    <div class="checkbox">
+                      <label style="font-size: 1em">
+                          <input name="names_maps" type="checkbox" value="{{map}}" checked>
+                          <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                          {{map}}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+                <div class="row">
+                  <div class="col">
+                    <h2 class="text-center">Fechas</h2>
+                    <div class="text-center">
+                      <p>FROM</p><input id="start_date" type="date">
+                      <p>TO</p><input id="end_date" type="date">
+                      <br>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col text-center">
+                    <h2 class="text-center">More</h2>
+                    <button type="button" class="btn btn-dark disabled text-center" data-toggle="modal" data-target="#exampleModal">
+                      Matches
+                    </button>
+                    <button type="button" class="btn btn-dark text-center" onclick="showIds()">
+                      Steam IDs
+                    </button>
+                  </div>
+                </div>
+
+              </div>
         </div>
 
+      <div class="row">
+        <div class="col" style="text-align: right;">
+          <div id="info_ids" style="display: none;">
+            <h3>STEAM IDs</h3>
+            debug... to-do: esto en popup
+            {% for player in players %}
+            <p>{{player.nick}} : {{player.steam_id}}</p>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="col-sm-8">
 
       <div id="chartContainer" class="text-center" style="height: 250px; width: 100%;"></div>
-
-      <div id="info_ids" style="display: none;">
-        <h3>DEBUG</h3>
-        to do: esto en popup
-        {% for player in players %}
-        <p>{{player.nick}} : {{player.steam_id}}</p>
-        {% endfor %}
-      </div>
+      <div id="chartContainer2" style="height: 370px; width: 100%;"></div>
 
     </div>
 
