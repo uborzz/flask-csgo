@@ -1,27 +1,33 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $('#principal').DataTable({
         "paging": false
     })
 })
 
+
 document.all_members = null
 document.selected_members = [] //pendiente guardar en cookie/local storage la seleccion
 document.string_members = ""
 
-function filterByNames () {
+document.match_id_elements = []
+
+function filterByNames() {
     $('#principal').DataTable().column(0).search($('#cont').val(), true, false).draw();
 }
 
-$( document ).ready(function() {
+document.selected_games = []
+
+
+$(document).ready(function () {
 
     // -------------------------------------------------------------------
     // GENERAL STATS PAGE
     // -------------------------------------------------------------------
 
-    $('#boxes').on('change', function(){
+    $('#boxes').on('change', function () {
         var selected = []
 
-        $.each($("input[name='names']:checked"), function(){
+        $.each($("input[name='names']:checked"), function () {
             selected.push($(this).val());
         });
 
@@ -35,14 +41,14 @@ $( document ).ready(function() {
     // COMPETITIVES PAGE
     // -------------------------------------------------------------------
 
-    $( "#botones_modo" ).change(function() {
+    $("#botones_modo").change(function () {
         updateWinLossChart()
     });
 
-    $('#boxes_comp').on('change', function(){
+    $('#boxes_comp').on('change', function () {
         var selected = []
 
-        $.each($("input[name='names_comp']:checked"), function(){
+        $.each($("input[name='names_comp']:checked"), function () {
             selected.push($(this).val());
         });
 
@@ -53,10 +59,10 @@ $( document ).ready(function() {
         updateWinLossChart()
     });
 
-    $('#boxes_maps').on('change', function(){
+    $('#boxes_maps').on('change', function () {
         var selected = []
 
-        $.each($("input[name='names_maps']:checked"), function(){
+        $.each($("input[name='names_maps']:checked"), function () {
             selected.push($(this).val());
         });
 
@@ -67,10 +73,10 @@ $( document ).ready(function() {
         updateWinLossChart()
     });
 
-    $('#start_date').on("change", function() {
+    $('#start_date').on("change", function () {
         updateWinLossChart()
     })
-    $('#end_date').on("change", function() {
+    $('#end_date').on("change", function () {
         updateWinLossChart()
     })
 
@@ -81,23 +87,30 @@ $( document ).ready(function() {
 
 
     function updateWinLossChart() {
-//        console.log(chart)
+
+        // TARTA GRAPHIC
+
         if (document.string_maps && document.string_members) {
 
+            // Aplying filters...
             var partidas = document.partidas
-
 
             // filtro mapas
             var filtradas_mapas = filterMaps(partidas)
 
-
             // filtro fechas
             var filtradas_fecha = filterDates(filtradas_mapas)
-
 
             // filtro players
             var filtradas_players = filterPlayers(filtradas_fecha)
 
+
+            // GAMES
+            // for game results...
+            document.selected_games = filtradas_players
+            console.log("ON UPDATE", document.selected_games)
+            var event = new CustomEvent('changes', { detail: { games: document.selected_games, all_players:document.players, selected_players: document.object_members } });
+            document.dispatchEvent(event);
 
 
             var total = 0
@@ -117,10 +130,10 @@ $( document ).ready(function() {
 
             if (total) {
                 chart.options.data[0].dataPoints = [
-                        { y: 100*ties/total, label: "Tie"},
-                        { y: 100*wins/total, label: "Win"},
-                        { y: 100*losses/total, label: "Loss"}
-                    ]
+                    { y: 100 * ties / total, label: "Tie" },
+                    { y: 100 * wins / total, label: "Win" },
+                    { y: 100 * losses / total, label: "Loss" }
+                ]
 
                 var chart_text = total + " matches"
                 var chart_subtitle = "Showing info for maps: " + document.string_maps
@@ -129,20 +142,20 @@ $( document ).ready(function() {
                 var chart_text = "0 matches"
                 var chart_subtitle = "No info for that selection."
                 chart.options.data[0].dataPoints = [
-                        { y: 0, label: "Tie"},
-                        { y: 100, label: "Win"},
-                        { y: 0, label: "Loss"}
-                    ]
+                    { y: 0, label: "Tie" },
+                    { y: 100, label: "Win" },
+                    { y: 0, label: "Loss" }
+                ]
             }
 
         } else {
             var chart_text = "0 matches"
             var chart_subtitle = "No players or maps clicked."
             chart.options.data[0].dataPoints = [
-                    { y: 0, label: "Tie"},
-                    { y: 100, label: "Win"},
-                    { y: 0, label: "Loss"}
-                ]
+                { y: 0, label: "Tie" },
+                { y: 100, label: "Win" },
+                { y: 0, label: "Loss" }
+            ]
         }
 
         chart.options.title.text = chart_text
@@ -150,27 +163,28 @@ $( document ).ready(function() {
         chart.render()
 
 
+        // COLUMN BAR GRAPHIC
 
         var array_por_mapas = {}
-        for (partida of filtradas_players) {
-            var mapa = partida['map']
-            if (!(mapa in array_por_mapas)) {
-                array_por_mapas[mapa] = {
-                    wins: 0,
-                    loses: 0,
-                    ties: 0
+        if (document.string_maps && document.string_members) {
+            for (partida of filtradas_players) {
+                var mapa = partida['map']
+                if (!(mapa in array_por_mapas)) {
+                    array_por_mapas[mapa] = {
+                        wins: 0,
+                        loses: 0,
+                        ties: 0
+                    }
+                }
+                if (partida['local_result'] == "W") {
+                    array_por_mapas[mapa].wins++
+                } else if (partida['local_result'] == "L") {
+                    array_por_mapas[mapa].loses++
+                } else {
+                    array_por_mapas[mapa].ties++
                 }
             }
-            if (partida['local_result'] == "W") {
-                array_por_mapas[mapa].wins++
-            } else if (partida['local_result'] == "L") {
-                array_por_mapas[mapa].loses++
-            } else {
-                array_por_mapas[mapa].ties++
-            }
         }
-        console.log(array_por_mapas)
-
 
         chart_columns.options.data[0].dataPoints = []
         chart_columns.options.data[1].dataPoints = []
@@ -178,16 +192,22 @@ $( document ).ready(function() {
 
         if (array_por_mapas) {
             for (const [map, results] of Object.entries(array_por_mapas)) {
-                chart_columns.options.data[0].dataPoints.push({y: results.wins, label: capitalize(map)})
-                chart_columns.options.data[1].dataPoints.push({y: results.loses, label: capitalize(map)})
-                chart_columns.options.data[2].dataPoints.push({y: results.ties, label: capitalize(map)})
+                chart_columns.options.data[0].dataPoints.push({ y: results.wins, label: capitalize(map) })
+                chart_columns.options.data[1].dataPoints.push({ y: results.loses, label: capitalize(map) })
+                chart_columns.options.data[2].dataPoints.push({ y: results.ties, label: capitalize(map) })
             }
         }
 
         chart_columns.render()
 
+
+        // go create the datatables after html init
+        var event_tables = new Event('createtables')
+        document.dispatchEvent(event_tables)
+
     }
 
+    console.log("ON_READY", document.selected_games)
 
     initializeLists()
     updateWinLossChart()
@@ -195,29 +215,29 @@ $( document ).ready(function() {
 });
 
 function initializeLists() {
-        var selected = []
-        $.each($("input[name='names_maps']:checked"), function(){
-            selected.push($(this).val());
-        });
-        document.object_maps = selected.slice(0)
-        document.string_maps = selected.join(" - ")
+    var selected = []
+    $.each($("input[name='names_maps']:checked"), function () {
+        selected.push($(this).val());
+    });
+    document.object_maps = selected.slice(0)
+    document.string_maps = selected.join(" - ")
 
-        var selected = []
-        $.each($("input[name='names_comp']:checked"), function(){
-            selected.push($(this).val());
-        });
-        document.object_members = selected.slice(0)
-        document.string_members = selected.join(", ")
-    }
-
-function showIds() {
-    var info_div = $("#info_ids")[0]
-    if (info_div.style.display === "none") {
-        info_div.style.display = "block";
-    } else {
-    info_div.style.display = "none";
-    }
+    var selected = []
+    $.each($("input[name='names_comp']:checked"), function () {
+        selected.push($(this).val());
+    });
+    document.object_members = selected.slice(0)
+    document.string_members = selected.join(", ")
 }
+
+//function showIds() {
+//    var info_div = $("#info_ids")[0]
+//    if (info_div.style.display === "none") {
+//        info_div.style.display = "block";
+//    } else {
+//        info_div.style.display = "none";
+//    }
+//}
 
 function createPie(html_name) {
     var pie = new CanvasJS.Chart(html_name, {
@@ -246,37 +266,37 @@ function createPie(html_name) {
 }
 
 function explodePie(e) {
-    for(var i = 0; i < e.dataSeries.dataPoints.length; i++) {
-        if(i !== e.dataPointIndex)
+    for (var i = 0; i < e.dataSeries.dataPoints.length; i++) {
+        if (i !== e.dataPointIndex)
             e.dataSeries.dataPoints[i].exploded = false;
     }
 }
 
 function getDummyDatapoints() {
     return [
-                { y: 33, label: "Win"},
-                { y: 34, label: "Loss"},
-                { y: 33, label: "Tie" }
-            ]
+        { y: 33, label: "Win" },
+        { y: 34, label: "Loss" },
+        { y: 33, label: "Tie" }
+    ]
 }
 
 
 
 
-function createColumns (html_name) {
+function createColumns(html_name) {
 
     var chart = new CanvasJS.Chart("chartContainer2", {
         animationEnabled: true,
-        title:{
+        title: {
             fontFamily: "Calibri",
             text: "W/L/T by map",
             fontSize: 22,
         },
-//        axisX: {
-//            interval: 1,
-//            intervalType: "date"
-//        },
-        axisY:{
+        //        axisX: {
+        //            interval: 1,
+        //            intervalType: "date"
+        //        },
+        axisY: {
             gridColor: "#B6B1A8",
             tickColor: "#B6B1A8"
         },
@@ -295,31 +315,31 @@ function createColumns (html_name) {
                 { y: 10.64, label: "mapa3" },
                 { y: 13.97, label: "mapa4" }
             ]
-            },
-            {
-                type: "stackedColumn",
-                showInLegend: true,
-                name: "Loses",
-                color: "#990000",
-                dataPoints: [
-                    { y: 6.75, label: "mapa1" },
-                    { y: 8.57, label: "mapa2" },
-                    { y: 10.64, label: "mapa3" },
-                    { y: 13.97, label: "mapa4" }
-                ]
-            },
-            {
-                type: "stackedColumn",
-                showInLegend: true,
-                name: "Ties",
-                color: "#999999",
-                dataPoints: [
-                    { y: 6.75, label: "mapa1" },
-                    { y: 8.57, label: "mapa2" },
-                    { y: 10.64, label: "mapa3" },
-                    { y: 13.97, label: "mapa4" }
-                ]
-            }]
+        },
+        {
+            type: "stackedColumn",
+            showInLegend: true,
+            name: "Loses",
+            color: "#990000",
+            dataPoints: [
+                { y: 6.75, label: "mapa1" },
+                { y: 8.57, label: "mapa2" },
+                { y: 10.64, label: "mapa3" },
+                { y: 13.97, label: "mapa4" }
+            ]
+        },
+        {
+            type: "stackedColumn",
+            showInLegend: true,
+            name: "Ties",
+            color: "#999999",
+            dataPoints: [
+                { y: 6.75, label: "mapa1" },
+                { y: 8.57, label: "mapa2" },
+                { y: 10.64, label: "mapa3" },
+                { y: 13.97, label: "mapa4" }
+            ]
+        }]
     });
 
     return chart
@@ -327,18 +347,18 @@ function createColumns (html_name) {
 }
 
 function toolTipContent(e) {
-	var str = "";
-	var total = 0;
-	var str2, str3;
-	for (var i = 0; i < e.entries.length; i++){
-		var  str1 = "<span style= \"color:"+e.entries[i].dataSeries.color + "\"> "+e.entries[i].dataSeries.name+"</span>: <strong>"+e.entries[i].dataPoint.y+"</strong><br/>";
-		total = e.entries[i].dataPoint.y + total;
-		str = str.concat(str1);
-	}
-	str2 = "<span style = \"color:DodgerBlue;\"><strong>"+e.entries[0].dataPoint.label+"</strong></span><br/>";
-	total = Math.round(total * 100) / 100;
-	str3 = "<span style = \"color:Tomato\">Total:</span><strong>"+total+"</strong><br/>";
-	return (str2.concat(str)).concat(str3);
+    var str = "";
+    var total = 0;
+    var str2, str3;
+    for (var i = 0; i < e.entries.length; i++) {
+        var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\"> " + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong><br/>";
+        total = e.entries[i].dataPoint.y + total;
+        str = str.concat(str1);
+    }
+    str2 = "<span style = \"color:DodgerBlue;\"><strong>" + e.entries[0].dataPoint.label + "</strong></span><br/>";
+    total = Math.round(total * 100) / 100;
+    str3 = "<span style = \"color:Tomato\">Total:</span><strong>" + total + "</strong><br/>";
+    return (str2.concat(str)).concat(str3);
 }
 
 
@@ -362,7 +382,7 @@ function getFilterMode() {
 }
 
 
-function filterMaps (partidas) {
+function filterMaps(partidas) {
     var filtradas = []
     for (var partida of partidas) {
         if (document.object_maps.includes(partida['map'])) {
@@ -374,12 +394,12 @@ function filterMaps (partidas) {
 
 
 function dateToTs(date_str, selected_included) {
-    myDate=date_str.split("-");
+    myDate = date_str.split("-");
     // console.log(myDate);
-    var newDate=myDate[1]+"/"+myDate[2]+"/"+myDate[0];
+    var newDate = myDate[1] + "/" + myDate[2] + "/" + myDate[0];
     ts = new Date(newDate).getTime();
     if (selected_included) {
-        ts = ts + 24*3600*1000
+        ts = ts + 24 * 3600 * 1000
     }
     return ts
 }
@@ -389,7 +409,7 @@ function filterDates(partidas) {
     var start_date = $("#start_date").val()
     var end_date = $("#end_date").val()
     start_date = dateToTs(start_date)
-    end_date = dateToTs(end_date, selected_included=true)
+    end_date = dateToTs(end_date, selected_included = true)
 
     if (!end_date) {
         end_date = new Date().getTime()
@@ -407,7 +427,7 @@ function filterDates(partidas) {
     return filtradas
 }
 
-function filterPlayers (partidas, filterMode) {
+function filterPlayers(partidas, filterMode) {
 
     var filterMode = getFilterMode()
 
@@ -439,7 +459,7 @@ function filterPlayers (partidas, filterMode) {
                 filtradas.push(partida)
             }
 
-        // modo cualquiera de los seleccionados (ANY)
+            // modo cualquiera de los seleccionados (ANY)
         } else if (filterMode == "any") {
             var success = false  // tiraremos a false el success hasta que veamos un player de los clickados en la game
             for (var player of document.object_members) {
@@ -455,7 +475,6 @@ function filterPlayers (partidas, filterMode) {
     }
     return filtradas
 }
-
 
 function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

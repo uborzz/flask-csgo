@@ -80,3 +80,112 @@ body {
     margin-bottom: 15px;
 }
 
+th {
+    text-align: center;
+}
+
+td {
+    text-align: center;
+}
+
+.panel-heading {
+    color: #212529;
+}
+
+.modal-mask {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9998;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  display: table;
+  transition: opacity .3s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal-rady-100 {
+    width: 100%;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.modal-rady-65 {
+    width: 60%;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.modal-rady-40 {
+    width: 40%;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+th {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+th.active {
+  color: #777;
+}
+
+th.active .arrow {
+  opacity: 1;
+}
+
+.arrow {
+  display: inline-block;
+  vertical-align: middle;
+  width: 0;
+  height: 0;
+  margin-left: 5px;
+  opacity: 0.66;
+}
+
+.arrow.asc {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid #777;
+}
+
+.arrow.dsc {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #777;
+}
+
+
+
+.card {
+    margin: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.card-heading {
+    padding-bottom: 0px;
+    margin-bottom: -15px;
+}
+
+.card-body {
+    margin-bottom: -25px;
+}
+
+
+#more-buttons {
+    padding-bottom: 10px;
+}
