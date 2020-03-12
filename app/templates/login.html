@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block heading %}
+{{ super() }}
+<title>Login</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            {{ login_form.csrf_token }}
+            <label for="username">User:</label>
+            {{ login_form.username(size=25) }} 
+            <label for="password">Pass:</label>        
+            {{ login_form.password }}
+            <input type="submit" class="btn btn-dark text-center btn-lg" value="Log In">
+        </form>
+    </div>
+{% endblock %}

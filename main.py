@@ -11,19 +11,24 @@ from pymongo import MongoClient
 from pymongo.errors import BulkWriteError
 import xmltodict
 from flask_cors import CORS
+from app.db import db
+from app import create_app
+from werkzeug.security import generate_password_hash
 
+import click
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-
+SECRET_KEY = os.getenv("SECRET_KEY")
 STEAM_KEY = os.getenv("STEAM_KEY")
 MONGO_URI = os.getenv("MONGO_URI")
 UPLOAD_PASS = os.getenv("UPLOAD_PASS")
 UPDATE_ON_LAUNCH = (os.getenv("UPDATE_ON_LAUNCH") == 'true')
 
-app = Flask(__name__)
-CORS(app)
+db.init(MONGO_URI)
+app = create_app(SECRET_KEY)
+
 
 #############################################################
 # DB_INFO
