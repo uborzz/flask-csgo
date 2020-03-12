@@ -10,18 +10,26 @@ from pprint import pprint
 from pymongo import MongoClient
 from pymongo.errors import BulkWriteError
 import xmltodict
-import _configs as cfg
 from flask_cors import CORS
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
+STEAM_KEY = os.getenv("STEAM_KEY")
+MONGO_URI = os.getenv("MONGO_URI")
+UPLOAD_PASS = os.getenv("UPLOAD_PASS")
+UPDATE_ON_LAUNCH = (os.getenv("UPDATE_ON_LAUNCH") == 'true')
 
 app = Flask(__name__)
 CORS(app)
-update_on_launch = False
 
 #############################################################
 # DB_INFO
 #############################################################
 
-client = MongoClient(cfg.mongo_uri, maxPoolSize=50, wtimeout=2000)
+client = MongoClient(MONGO_URI, maxPoolSize=50, wtimeout=2000)
 db = client['steam']  # database
 dofitos = db['dofitos']  # collection
 dofitos_general_stats_db = db['dofitos_general']  # collection
@@ -96,8 +104,8 @@ def update_database_data():
     # ID - "76" + (parseInt(campo-mini) + 561197960265728)
     for member in members_ids:
         player_steamid = member
-        call_stats = player_url.format(cfg.steam_key, player_steamid)
-        call_status = status_url.format(cfg.steam_key, player_steamid)
+        call_stats = player_url.format(STEAM_KEY, player_steamid)
+        call_status = status_url.format(STEAM_KEY, player_steamid)
         print("calling GET statistics", call_stats)
         print("calling GET status", call_status)
         try:
@@ -163,7 +171,7 @@ def update_dofitos_found_in_competitives():
     print(members_in_competitives)
 
 
-if update_on_launch:
+if UPDATE_ON_LAUNCH:
     worker_data = Thread(target=update_database_data)
     worker_data.setDaemon(True)
     worker_data.start()
@@ -269,7 +277,7 @@ def post_test():
 @app.route('/uploadgames', methods=['POST'])
 def upload_games():
     try:
-        if request.args['password'] == cfg.upload_password:
+        if request.args['password'] == UPLOAD_PASS:
             # inserta base datos
             data = json.loads(request.data)
             result = insert_competitive_matches(data['matches'])

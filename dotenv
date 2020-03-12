@@ -1,0 +1,8 @@
+# This is a .env sample file
+# Configure it and save as .env
+
+STEAM_KEY="STEAM_KEY_HERE"
+MONGO_URI="mongodb://127.0.0.1:27017"
+UPLOAD_PASS="UPLOAD_PASS_HERE"
+UPDATE_ON_LAUNCH="false" 
+# UPDATE_ON_LAUNCH can be "true". Any other value means False.
