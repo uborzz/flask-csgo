@@ -10,7 +10,7 @@ from app.auth.flask_user import FlaskUser
 from . import auth
 
 
-@auth.route('login', methods=['GET', 'POST'])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
     context = {
@@ -36,17 +36,16 @@ def login():
     return render_template('login.html', **context)
 
 
-@auth.route('admin', methods=['GET'])
+@auth.route('/admin', methods=['GET'])
 def admin():
     context = {}
 
     return render_template('admin.html', **context)
 
 
-@auth.route('logout')
+@auth.route('/logout')
 @login_required
 def logout():
     logout_user()
-    flash('Regresa pronto')
-
+    flash('Bye!')
     return redirect(url_for('auth.login'))

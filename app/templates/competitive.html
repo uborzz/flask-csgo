@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 
 {% block heading %}
 <title>CSGO Stats: Competitivas</title>
@@ -9,385 +9,385 @@
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 <script type="text/javascript">
-  var partidas_text = {{ partidas| tojson}}
+  var partidas_text = {{ partidas | tojson}}
   document.partidas = JSON.parse(partidas_text)
-  document.players = JSON.parse({{ players_jsondump| tojson}})
+  document.players = JSON.parse({{ players_jsondump | tojson}})
   document.contador_partidas = {{ total_partidas }}
 </script>
 
 <div class="container">
   <h1 class="text-center">CSGO Stats: Competitivas</h1>
-
+  
   <div id="root">
     <div class="row">
-
+      
       <div class="col-sm-3">
-
+        
         <div class="row">
-
+          
           <div class="col-sm-6" style="padding: 3px;">
-
-                <h2 class="text-center">Players</h2>
-                <input type="text" id="cont" value="" hidden>
-                <div id="boxes_comp">
-                  {% for member in players %}
-                  <div class="checkbox">
-                    <label style="font-size: 1em">
-                      <input name="names_comp" type="checkbox" value="{{member.steam_id}}" checked>
-                      <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-                      {{member.nick}}
-                    </label>
-                  </div>
-                  {% endfor %}
-                </div>
-
-
-
-
-                <h2 class="text-center">Modo Filtrado</h2>
-                <div id="botones_modo" class="btn-group-vertical btn-group-toggle btn-block btn-lg"
-                  data-toggle="buttons">
-                  <label class="btn btn-dark">
-                    <input type="radio" name="radio_modo" id="option_any" autocomplete="off" checked> ANY Selected
-                  </label>
-                  <label class="btn btn-dark active">
-                    <input type="radio" name="radio_modo" id="option_all" autocomplete="off"> ALL must match
-                  </label>
-                  <label class="btn btn-dark disabled">
-                    <input type="radio" name="radio_modo" id="option_exc" autocomplete="off"> ONLY selected
-                  </label>
-                </div>
-
-
-
-          </div>
-
-          <div class="col-sm-6" style="padding: 3px;">
-
-
-
-            <h2 class="text-center">Maps</h2>
-            <input type="text" id="maps" value="" hidden>
-            <div id="boxes_maps">
-              {% for map in maps %}
+            
+            <h2 class="text-center">Players</h2>
+            <input type="text" id="cont" value="" hidden>
+            <div id="boxes_comp">
+              {% for member in players %}
               <div class="checkbox">
                 <label style="font-size: 1em">
-                  <input name="names_maps" type="checkbox" value="{{map}}" checked>
+                  <input name="names_comp" type="checkbox" value="{{member.steam_id}}" checked>
                   <span class="cr"><i class="cr-icon fa fa-check"></i></span>
-                  {{map}}
+                  {{member.nick}}
                 </label>
               </div>
               {% endfor %}
             </div>
-
-
-
-
-            <h2 class="text-center">Fechas</h2>
-            <div class="text-center">
-              <p>FROM</p><input id="start_date" type="date">
-              <p>TO</p><input id="end_date" type="date">
-              <br>
+            
+            
+            
+            
+            <h2 class="text-center">Modo Filtrado</h2>
+            <div id="botones_modo" class="btn-group-vertical btn-group-toggle btn-block btn-lg"
+            data-toggle="buttons">
+            <label class="btn btn-dark">
+              <input type="radio" name="radio_modo" id="option_any" autocomplete="off" checked> ANY Selected
+            </label>
+            <label class="btn btn-dark active">
+              <input type="radio" name="radio_modo" id="option_all" autocomplete="off"> ALL must match
+            </label>
+            <label class="btn btn-dark disabled">
+              <input type="radio" name="radio_modo" id="option_exc" autocomplete="off"> ONLY selected
+            </label>
+          </div>
+          
+          
+          
+        </div>
+        
+        <div class="col-sm-6" style="padding: 3px;">
+          
+          
+          
+          <h2 class="text-center">Maps</h2>
+          <input type="text" id="maps" value="" hidden>
+          <div id="boxes_maps">
+            {% for map in maps %}
+            <div class="checkbox">
+              <label style="font-size: 1em">
+                <input name="names_maps" type="checkbox" value="{{map}}" checked>
+                <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                {{map}}
+              </label>
             </div>
-
-
+            {% endfor %}
+          </div>
+          
+          
+          
+          
+          <h2 class="text-center">Fechas</h2>
+          <div class="text-center">
+            <p>FROM</p><input id="start_date" type="date">
+            <p>TO</p><input id="end_date" type="date">
             <br>
-            <h2 class="text-center" id="more-buttons">More</h2>
-            <button type="button" class="btn btn-dark text-center btn-lg btn-block" @click="showModal = true">Show
-              matches info</button>
+          </div>
+          
+          
+          <br>
+          <h2 class="text-center" id="more-buttons">More</h2>
+          <button type="button" class="btn btn-dark text-center btn-lg btn-block" @click="showModal = true">Show
+            matches info</button>
             <button type="button" class="btn btn-dark text-center btn-lg btn-block" @click="showIds = true">Players
               Steam IDs</button>
-            <button type="button" class="btn btn-info btn-lg text-center btn-block"
+              <button type="button" class="btn btn-info btn-lg text-center btn-block"
               @click="showHelp = !showHelp">(<i class="fa fa-info"></i>) Match upload</button>
-            <button type="button" class="btn btn-secondary btn-lg text-center btn-block"
+              <button type="button" class="btn btn-secondary btn-lg text-center btn-block"
               @click="showLog = !showLog"><i class="fa fa-file"></i> Updates log</button>
-
-
-
+              
+              
+              
+            </div>
+          </div>
+          <div class="row">
+            <div class="col text-center">
+              <h4 class="font-weight-bold mb-3">Partidas en el sistema</h4>
+              <h2 class="font-weight-bold">{{total_partidas}} matches</h2>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col text-center">
-            <h4 class="font-weight-bold mb-3">Partidas en el sistema</h4>
-            <h2 class="font-weight-bold">{{total_partidas}} matches</h2>
+        
+        
+        <div class="col-sm-9">
+          
+          <div class="row">
+            <div class="col-sm-5">
+              <div id="chartContainer" class="text-center" style="height: 400px; width: 100%;"></div>
+            </div>
+            <div class="col-sm-7">
+              <div id="chartContainer2" style="height: 400px; width: 100%;"></div>
+            </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <div id="stats">
+                <stats v-bind:games="games" :players="selected_players"></stats>
+              </div>
+            </div>
+          </div>
+          
+          
         </div>
+        
       </div>
-
-
-      <div class="col-sm-9">
-
-        <div class="row">
-          <div class="col-sm-5">
-            <div id="chartContainer" class="text-center" style="height: 400px; width: 100%;"></div>
-          </div>
-          <div class="col-sm-7">
-            <div id="chartContainer2" style="height: 400px; width: 100%;"></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div id="stats">
-              <stats v-bind:games="games" :players="selected_players"></stats>
-            </div>
-          </div>
-        </div>
-
-
+      
+      <div class="row">
+        <br>
       </div>
-
-    </div>
-
-    <div class="row">
-      <br>
-    </div>
-
-
-
-
-    <div v-if="showHelp">
-
-      <transition name="modal-help">
-        <div class="modal-mask" tabindex="-1" @keydown.esc="showHelp = false">
-          <div class="modal-wrapper">
-            <div class="modal-dialog-centered modal-rady-65" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title">Chrome plugin & upload info</h1>
-                  <button type="button" class="close" data-dismiss="modal" @click="showHelp = false" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <!-- demo root element -->
-                  <div id="help-body">
-
-                    <!-- Grid row -->
-                    <div class="row">
-
-                      <!-- Grid column -->
-                      <div class="col-md-4 text-center">
-
-                        <!-- Grid row -->
-                        <div class="row mb-3">
-
-                          <!-- Grid column -->
-                          <div class="col">
-                            <h3 class="font-weight-bold text-center mb-3">Cómo enviar partidas?</h3>
-                            <p class="text-center mx-auto mb-5">Si quieres enviar tus partidas al sistema, sigue la guía
-                              rápida o míralo explicado más paso a paso en <a href="/help_upload" target="_blank">esta
-                                guía.</a></p>
-                          </div>
-                        </div>
-
-                        <div class="row mb-5">
-
-                          <!-- Grid column -->
-                          <div class="col">
-                            <h5 class="font-weight-bold mb-3">Plugin</h5>
-                            <p> Para enviar las partidas se necesita el plugin de Chrome, descargalo y activalo.</p>
-                            <p class="text-center"><a
-                                href="https://chrome.google.com/webstore/detail/csgo-competitive-matchine/nfjabioikcikngoihhfenimoapadlikd"
-                                target="_blank">Plugin en Chrome.</a> </p>
-                          </div>
-                        </div>
-
-                        <div class="row mb-3">
-
-                          <!-- Grid column -->
-                          <div class="col">
-                            <h3 class="font-weight-bold mb-3">Partidas subidas</h3>
-                            <p>Contador partidas actualmente en el sistema:</p>
-                            <h2 class="text-center font-weight-bold ">{{total_partidas}} matches.</h2>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-md-8">
-
-                        <!-- Grid row -->
-                        <div class="row mb-3">
-
-                          <!-- Grid column -->
-                          <div class="col">
-                            <h3 class="text-center font-weight-bold">Guía rápida</h3>
-                          </div>
-                        </div>
-
-                        <!-- Grid row -->
-                        <div class="row mb-3">
-
-                          <!-- Grid column -->
-                          <div class="col">
-                            <h4 class="font-weight-bold"><i class="fa fa-code"></i> Acceso</h4>
-                            <p>Accede ya logeado a tu sección en:</p>
-                            <p>https://steamcommunity.com/id/&ltTU-PERFIL-ID&gt/gcpd/730/?tab=matchhistorycompetitive
-                            </p>
-                          </div>
-                        </div>
-
-                        <div class="row mb-3">
-
-                          <!-- Grid column -->
-                          <div class="col">
-                            <h4 class="font-weight-bold"> <i class="fa fa-comment"></i> Nota!</h4>
-                            <p>Si no activaste tu id de perfil de steam, tendrías que acceder a:</p>
-                            <p>
-                              https://steamcommunity.com/profiles/&ltTU-STEAM-ID&gt/gcpd/730/?tab=matchhistorycompetitive
-                            </p>
-                          </div>
-                        </div>
-                        <div class="row mb-3">
-
-                          <!-- Grid column -->
-                          <div class="col">
-                            <h4 class="font-weight-bold"><i class="fa fa-laptop"></i> Uso</h4>
-                            <p> Usar los botones del plugin para cargar y enviar los datos. Nuestra password pedirla en
-                              el telegram.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
+      
+      
+      
+      
+      <div v-if="showHelp">
+        
+        <transition name="modal-help">
+          <div class="modal-mask" tabindex="-1" @keydown.esc="showHelp = false">
+            <div class="modal-wrapper">
+              <div class="modal-dialog-centered modal-rady-65" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title">Chrome plugin & upload info</h1>
+                    <button type="button" class="close" data-dismiss="modal" @click="showHelp = false" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
                   </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" @click="showHelp = false">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </div>
-
-
-    <div v-if="showLog">
-
-      <transition name="modal-help">
-        <div class="modal-mask" tabindex="-1" @keydown.esc="showLog = false">
-          <div class="modal-wrapper">
-            <div class="modal-dialog-centered modal-rady-65" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title">Log & info</h1>
-                  <button type="button" class="close" data-dismiss="modal" @click="showLog = false" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <!-- demo root element -->
-                  <div id="help-body">
-
-                    <div class="row">
-                      <!-- Grid column -->
-                      <div class="col">
-                        <h2 class="font-weight-bold">Estado</h2>
-                        <p>Trabajando en ello... Actualmente se pueden enviar partidas con nuestro plugin, pero no se
-                          recibe respuesta del
-                          estado. Si quereis mandar partidas, una forma de ver si se han insertado es mediante el
-                          contador que se ve aquí
-                          abajo. Si tras enviar partidas este valor ha cambiado, se puede entender que habéis añadido
-                          partidas
-                          correctamente.</p>
-                        <p>update 1. parte de subir partidas sigue igual. trabajando en front, modificada base datos
-                          para empezar a traer
-                          info para mostrar</p>
-                        <p>update 2. parte de subir partidas sigue igual. probando otro tipo gráficas</p>
-                        <p>update 3. added reactive vue tables with per player stats from filtered games. Added game
-                          details modal.</p>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" @click="showLog = false">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </div>
-
-
-
-
-    <div v-if="showIds">
-
-      <transition name="modal-help">
-        <div class="modal-mask" tabindex="-1" @keydown.esc="showIds = false">
-          <div class="modal-wrapper">
-            <div class="modal-dialog-centered modal-rady-40" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title">STEAM IDs</h1>
-                  <button type="button" class="close" data-dismiss="modal" @click="showIds = false" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <!-- demo root element -->
-                  <div id="help-body">
-
-                    <div class="row">
-                      <div class="col">
-                        <div id="info_ids">
-                          <p v-for="player in all_players"><%player.nick%> : <%player.steam_id%></p>
+                  <div class="modal-body">
+                    <!-- demo root element -->
+                    <div id="help-body">
+                      
+                      <!-- Grid row -->
+                      <div class="row">
+                        
+                        <!-- Grid column -->
+                        <div class="col-md-4 text-center">
+                          
+                          <!-- Grid row -->
+                          <div class="row mb-3">
+                            
+                            <!-- Grid column -->
+                            <div class="col">
+                              <h3 class="font-weight-bold text-center mb-3">Cómo enviar partidas?</h3>
+                              <p class="text-center mx-auto mb-5">Si quieres enviar tus partidas al sistema, sigue la guía
+                                rápida o míralo explicado más paso a paso en <a href="/help_upload" target="_blank">esta
+                                  guía.</a></p>
+                                </div>
+                              </div>
+                              
+                              <div class="row mb-5">
+                                
+                                <!-- Grid column -->
+                                <div class="col">
+                                  <h5 class="font-weight-bold mb-3">Plugin</h5>
+                                  <p> Para enviar las partidas se necesita el plugin de Chrome, descargalo y activalo.</p>
+                                  <p class="text-center"><a
+                                    href="https://chrome.google.com/webstore/detail/csgo-competitive-matchine/nfjabioikcikngoihhfenimoapadlikd"
+                                    target="_blank">Plugin en Chrome.</a> </p>
+                                  </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                  
+                                  <!-- Grid column -->
+                                  <div class="col">
+                                    <h3 class="font-weight-bold mb-3">Partidas subidas</h3>
+                                    <p>Contador partidas actualmente en el sistema:</p>
+                                    <h2 class="text-center font-weight-bold ">{{total_partidas}} matches.</h2>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div class="col-md-8">
+                                
+                                <!-- Grid row -->
+                                <div class="row mb-3">
+                                  
+                                  <!-- Grid column -->
+                                  <div class="col">
+                                    <h3 class="text-center font-weight-bold">Guía rápida</h3>
+                                  </div>
+                                </div>
+                                
+                                <!-- Grid row -->
+                                <div class="row mb-3">
+                                  
+                                  <!-- Grid column -->
+                                  <div class="col">
+                                    <h4 class="font-weight-bold"><i class="fa fa-code"></i> Acceso</h4>
+                                    <p>Accede ya logeado a tu sección en:</p>
+                                    <p>https://steamcommunity.com/id/&ltTU-PERFIL-ID&gt/gcpd/730/?tab=matchhistorycompetitive
+                                    </p>
+                                  </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                  
+                                  <!-- Grid column -->
+                                  <div class="col">
+                                    <h4 class="font-weight-bold"> <i class="fa fa-comment"></i> Nota!</h4>
+                                    <p>Si no activaste tu id de perfil de steam, tendrías que acceder a:</p>
+                                    <p>
+                                      https://steamcommunity.com/profiles/&ltTU-STEAM-ID&gt/gcpd/730/?tab=matchhistorycompetitive
+                                    </p>
+                                  </div>
+                                </div>
+                                <div class="row mb-3">
+                                  
+                                  <!-- Grid column -->
+                                  <div class="col">
+                                    <h4 class="font-weight-bold"><i class="fa fa-laptop"></i> Uso</h4>
+                                    <p> Usar los botones del plugin para cargar y enviar los datos. Nuestra password pedirla en
+                                      el telegram.</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="showHelp = false">Close</button>
+                          </div>
                         </div>
                       </div>
                     </div>
-
                   </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" @click="showIds = false">Close</button>
-                </div>
+                </transition>
               </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </div>
-
-
-
-    <!--Vue + info?-->
-    <div v-if="showModal">
-      <transition name="modal">
-        <div class="modal-mask" tabindex="-1" @keydown.esc="showModal = false">
-          <div class="modal-wrapper">
-            <div class="modal-dialog-scrollable modal-rady-100" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title">Selected matches</h1>
-                  <button type="button" class="close" data-dismiss="modal" @click="showModal = false"
-                    aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <!-- demo root element -->
-                  <div id="demo">
-                    <game v-for="game in games" v-bind:game="game">
-                    </game>
+              
+              
+              <div v-if="showLog">
+                
+                <transition name="modal-help">
+                  <div class="modal-mask" tabindex="-1" @keydown.esc="showLog = false">
+                    <div class="modal-wrapper">
+                      <div class="modal-dialog-centered modal-rady-65" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title">Log & info</h1>
+                            <button type="button" class="close" data-dismiss="modal" @click="showLog = false" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <!-- demo root element -->
+                            <div id="help-body">
+                              
+                              <div class="row">
+                                <!-- Grid column -->
+                                <div class="col">
+                                  <h2 class="font-weight-bold">Estado</h2>
+                                  <p>Trabajando en ello... Actualmente se pueden enviar partidas con nuestro plugin, pero no se
+                                    recibe respuesta del
+                                    estado. Si quereis mandar partidas, una forma de ver si se han insertado es mediante el
+                                    contador que se ve aquí
+                                    abajo. Si tras enviar partidas este valor ha cambiado, se puede entender que habéis añadido
+                                    partidas
+                                    correctamente.</p>
+                                    <p>update 1. parte de subir partidas sigue igual. trabajando en front, modificada base datos
+                                      para empezar a traer
+                                      info para mostrar</p>
+                                      <p>update 2. parte de subir partidas sigue igual. probando otro tipo gráficas</p>
+                                      <p>update 3. added reactive vue tables with per player stats from filtered games. Added game
+                                        details modal.</p>
+                                      </div>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" @click="showLog = false">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </transition>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div v-if="showIds">
+                      
+                      <transition name="modal-help">
+                        <div class="modal-mask" tabindex="-1" @keydown.esc="showIds = false">
+                          <div class="modal-wrapper">
+                            <div class="modal-dialog-centered modal-rady-40" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title">STEAM IDs</h1>
+                                  <button type="button" class="close" data-dismiss="modal" @click="showIds = false" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <!-- demo root element -->
+                                  <div id="help-body">
+                                    
+                                    <div class="row">
+                                      <div class="col">
+                                        <div id="info_ids">
+                                          <p v-for="player in all_players"><%player.nick%> : <%player.steam_id%></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" @click="showIds = false">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </transition>
+                    </div>
+                    
+                    
+                    
+                    <!--Vue + info?-->
+                    <div v-if="showModal">
+                      <transition name="modal">
+                        <div class="modal-mask" tabindex="-1" @keydown.esc="showModal = false">
+                          <div class="modal-wrapper">
+                            <div class="modal-dialog-scrollable modal-rady-100" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title">Selected matches</h1>
+                                  <button type="button" class="close" data-dismiss="modal" @click="showModal = false"
+                                  aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <!-- demo root element -->
+                                <div id="demo">
+                                  <game v-for="game in games" v-bind:game="game">
+                                  </game>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="showModal = false">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </transition>
                   </div>
+                  
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" @click="showModal = false">Close</button>
-                </div>
+                
+                
+                
+                
               </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </div>
-
-  </div>
-
-
-
-
-</div>
-{% endblock %}
+              {% endblock %}

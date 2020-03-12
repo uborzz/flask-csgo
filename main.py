@@ -5,7 +5,7 @@ from datetime import datetime
 from threading import Thread
 from apscheduler.schedulers.background import BackgroundScheduler
 from bson import json_util
-from flask import Flask, render_template, Response, request, jsonify
+from flask import Flask, render_template, Response, request, jsonify, redirect, url_for
 from pprint import pprint
 from pymongo import MongoClient
 from pymongo.errors import BulkWriteError
@@ -216,14 +216,19 @@ def insert_competitive_matches(matches_list):
 #############################################################
 
 @app.route('/')
-def home_page():
+def index():
+    return redirect(url_for('competitive'))
+
+
+@app.route('/stats')
+def stats():
     players = list(dofitos_general_stats_db.find())
     names = sorted([member['nick'] for member in players], key=lambda s: s.lower())
-    return render_template('base.html', all_players=players, names=names)
+    return render_template('stats.html', all_players=players, names=names)
 
 
 @app.route('/competitive')
-def competitive_page():
+def competitive():
     # total_partidas = competitives.find({}, {"nick": 1, "_id": 0}).count()
     partidas = competitives.find()
     total_partidas = partidas.count()

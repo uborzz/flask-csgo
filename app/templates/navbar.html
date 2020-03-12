@@ -1,0 +1,22 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">CSGO Stats: Dofitos Bastardos!</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-csgo" aria-controls="navbar-csgo" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbar-csgo">
+    <ul class="nav navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('stats') }}">Public Stats</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('competitive') }}">Competitives</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {% if current_user.is_authenticated %}
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a></li>
+      {% else %}
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a></li>
+      {% endif %}
+      <li class="nav-item"><a class="nav-link" href="http://apps.uborzz.es" target="_blank">Wow flask Apps</a></li>
+      <li class="nav-item"><a class="nav-link" href="http://uborzz.es" target="_blank">blog: la caja loca</a></li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
