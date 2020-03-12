@@ -1,0 +1,2 @@
+# replaces: language issue
+db.competitives.update({map:  "Competitivo Inferno"}, {$set: {map:  "Inferno"}}, {multi: true})
