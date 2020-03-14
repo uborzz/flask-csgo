@@ -31,7 +31,7 @@
                 </thead>
                 <tbody>
                     {% for member in all_players %}
-                    <tr onclick="location='raw/{{member.steam_id}}'">
+                    <tr onclick="location='/stats/{{member.steam_id}}'">
                         <td class="text-center">{{member['nick']}}</td>
                         <td class="text-center">{{member['kd_ratio']}}</td>
                         <td class="text-center">{{member['rounds_won']}}</td>

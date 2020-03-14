@@ -4,6 +4,8 @@ from flask_cors import CORS
 
 from .auth import auth
 from .auth.flask_user import FlaskUser
+from .stats import stats
+from .competitives import competitive
 
 
 login_manager = LoginManager()
@@ -19,5 +21,7 @@ def create_app(secret_key):
     app.secret_key = secret_key
     login_manager.init_app(app)
     app.register_blueprint(auth)
-    CORS(app)
+    app.register_blueprint(stats)
+    app.register_blueprint(competitive)
+    CORS(app, resources={r"/uploadgames": {"origins": ["https://steamcommunity.com"]}})
     return app

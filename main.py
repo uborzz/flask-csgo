@@ -192,10 +192,6 @@ scheduler.add_job(update_dofitos_found_in_competitives, "interval", hours=24)
 #############################################################
 # Services/DB methods
 #############################################################
-def get_page(kwargs):
-    pass
-
-
 def insert_competitive_matches(matches_list):
     for match in matches_list:
         match["_id"] = match.pop("datetime")
@@ -214,55 +210,12 @@ def insert_competitive_matches(matches_list):
 #############################################################
 # Http API
 #############################################################
-
 @app.route('/')
 def index():
-    return redirect(url_for('competitive'))
+    return redirect(url_for('competitive.index'))
 
 
-@app.route('/stats')
-def stats():
-    players = list(dofitos_general_stats_db.find())
-    names = sorted([member['nick'] for member in players], key=lambda s: s.lower())
-    return render_template('stats.html', all_players=players, names=names)
-
-
-@app.route('/competitive')
-def competitive():
-    # total_partidas = competitives.find({}, {"nick": 1, "_id": 0}).count()
-    partidas = competitives.find()
-    total_partidas = partidas.count()
-    try:
-        group_info_query = group.find_one({"_id": "members_in_competitives"})
-        players = group_info_query["members"]
-        maps = group_info_query["maps_played"]
-    except (TypeError, KeyError):
-        players = list()
-        maps = list()
-    return render_template('competitive.html', total_partidas=total_partidas, partidas=json_util.dumps(partidas),
-                           players=players, players_jsondump=json_util.dumps(players), maps=maps)
-
-
-@app.route('/raw/<member_id>')
-def raw(member_id):
-    res = dofitos.find_one({"playerstats.steamID": member_id})
-    return Response(
-        json_util.dumps(res),
-        mimetype='application/json'
-    )
-
-
-@app.route('/dbtest')
-def insert_dummy():
-    t = datetime.now()
-    res = testdb.update_one({"nombre": "prueba insert"}, {"$set": {"date": t}}, upsert=True)
-    return Response(
-        json_util.dumps(res.raw_result),
-        mimetype='application/json'
-    )
-
-
-@app.route('/gettest')
+@app.route('/test/get')
 def get_test():
     return Response(
         json_util.dumps({
@@ -272,7 +225,7 @@ def get_test():
     )
 
 
-@app.route('/posttest', methods=['POST'])
+@app.route('/test/post', methods=['POST'])
 def post_test():
     return Response(
         json_util.dumps({
@@ -280,6 +233,16 @@ def post_test():
             "echo": request.json,
             "mimetype": request.mimetype
         }),
+        mimetype='application/json'
+    )
+
+
+@app.route('/test/db')
+def insert_dummy():
+    t = datetime.now()
+    res = testdb.update_one({"nombre": "prueba insert"}, {"$set": {"date": t}}, upsert=True)
+    return Response(
+        json_util.dumps(res.raw_result),
         mimetype='application/json'
     )
 
@@ -300,7 +263,7 @@ def upload_games():
     except Exception as e:
         print(str(e))
         return Response(
-            response=json.dumps({"result": "error", "description": "Shit happend. FU.", "back_exception": str(e)}),
+            response=json.dumps({"result": "error", "description": "Shit happend."}),
             status=400, mimetype='application/json')
 
 

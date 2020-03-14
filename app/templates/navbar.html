@@ -6,8 +6,8 @@
   
   <div class="collapse navbar-collapse" id="navbar-csgo">
     <ul class="nav navbar-nav mr-auto mt-2 mt-lg-0">
-      <li class="nav-item"><a class="nav-link" href="{{ url_for('stats') }}">Public Stats</a></li>
-      <li class="nav-item"><a class="nav-link" href="{{ url_for('competitive') }}">Competitives</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('stats.index') }}">Public Stats</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('competitive.index') }}">Competitives</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       {% if current_user.is_authenticated %}
