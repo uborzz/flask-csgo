@@ -8,11 +8,8 @@ from .stats import stats
 from .competitives import competitive
 from .provisional_test import test
 
-from .stats.services import update_database_data
+from .stats.services import update_general_stats_data
 from .competitives.services import update_dofitos_found_in_competitives
-
-update_database_data
-update_dofitos_found_in_competitives
 
 from .config import Config
 from .db import db
@@ -48,15 +45,8 @@ def create_app():
     db.init(app.config["MONGO_URI"])
     print("▶ DB initialized")
 
-    def b():
-        print("BBB")
-
-    def c(v):
-        print("CCCCCCCCC", v)
-
     # task scheduler
-    steam_key = app.config["STEAM_KEY"]
-    scheduler.new_job(update_database_data, steam_key, hours=24)
+    scheduler.new_job(update_general_stats_data, app, hours=24)
     scheduler.new_job(update_dofitos_found_in_competitives, hours=24)
 
     scheduler.start()
