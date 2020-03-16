@@ -1,8 +1,11 @@
-from app.db import db
 import os
-from werkzeug.security import generate_password_hash, check_password_hash
 from getpass import getpass
+
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from app.db import db
 from dotenv import load_dotenv
+
 load_dotenv()
 
 db.init(os.getenv("MONGO_URI"))

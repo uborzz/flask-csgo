@@ -1,4 +1,4 @@
-from flask import render_template, session, redirect, flash, url_for, Response
+from flask import render_template, Response
 from bson import json_util
 
 from ..db import db
@@ -16,12 +16,9 @@ def index():
     return render_template("stats.html", **context)
 
 
-@stats.route('/<member_id>', methods=["GET"])
+@stats.route("/<member_id>", methods=["GET"])
 def raw(member_id):
     result = db.get_player_public_stats(member_id)
-    print('result', type(result))
-    print('jsoned', type(json_util.dumps(result)))
-    return Response(
-        json_util.dumps(result),
-        mimetype='application/json'
-    )
+    print("result", type(result))
+    print("jsoned", type(json_util.dumps(result)))
+    return Response(json_util.dumps(result), mimetype="application/json")

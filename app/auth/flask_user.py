@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from ..db import db
 from ..models import User
 
-        
+
 class FlaskUser(UserMixin):
     def __init__(self, user: User):
         self.id = user.username

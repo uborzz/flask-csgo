@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from .models import User, SteamUser, CompetitiveInfo
+from datetime import datetime
 
 from typing import List, Dict, Union
 
@@ -21,6 +22,7 @@ class MongoDB:
         self._profiles = db["profile_ids"]
         self._competitives = db["competitives"]
         self._competitives_uploaders = db["competitives_uploaders"]
+        self._test_col = db["testdb"]
 
         self._initialized = True
 
@@ -30,7 +32,9 @@ class MongoDB:
 
     def get_user(self, username) -> Union[User, None]:
         user = self._users.find_one({"username": username})
-        return User(username=user["username"], password=user["password"]) if user else None
+        return (
+            User(username=user["username"], password=user["password"]) if user else None
+        )
 
     def get_general_stats(self) -> List[Dict]:
         return list(self._dofitos_general_stats_db.find())
@@ -38,9 +42,9 @@ class MongoDB:
     def get_player_public_stats(self, member_id):
         return self._dofitos.find_one({"playerstats.steamID": member_id})
 
-    def get_players_in_competitive(self) -> Union [CompetitiveInfo, None]:
+    def get_players_in_competitive(self) -> Union[CompetitiveInfo, None]:
         group_info_query = self._group.find_one({"_id": "members_in_competitives"})
-        
+
         if group_info_query:
             players: List[SteamUser] = group_info_query["members"]
             maps: List[str] = group_info_query["maps_played"]
@@ -50,7 +54,14 @@ class MongoDB:
             return {"players": [], "maps": []}
 
     def get_all_competitive_matches(self):
-        return self._competitives.find()
-        
+        return list(self._competitives.find())
+
+    # prov.
+    def _test(self):
+        now = datetime.now()
+        return self._test_col.update_one(
+            {"nombre": "prueba insert"}, {"$set": {"date": now}}, upsert=True
+        )
+
 
 db = MongoDB()

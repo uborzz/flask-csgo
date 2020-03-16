@@ -1,4 +1,4 @@
-from typing import NamedTuple, List, TypedDict
+from typing import List, TypedDict
 
 
 class SteamUser(TypedDict):
