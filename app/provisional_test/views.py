@@ -2,9 +2,8 @@
 
 TODO erase this and create proper tests."""
 
-from flask import Response, request
+from flask import Response, request, jsonify
 from bson import json_util
-from flask import jsonify, Response
 import json
 from . import test
 from ..db import db

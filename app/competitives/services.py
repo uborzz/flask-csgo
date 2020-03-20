@@ -1,36 +1,19 @@
 from ..db import db
 
-from pymongo.errors import BulkWriteError
-from datetime import datetime
 
-
-def update_players_found_in_competitives():
+def update_players_and_maps_found_in_competitives():
     """
-    Exploramos partidas competitivas en el sistema y nos quedamos con el nick más reciente y el id_steam
-    de las coincidencias con la lista de miembros del clan de steam, tengan o no abierto el perfil.
+    Exploramos partidas competitivas en el sistema y nos quedamos con el nick más
+    reciente y el id_steam de las coincidencias con la lista de miembros del clan
+    de steam, tengan o no abierto el perfil.
     """
-    matches = db._competitives.find(
-        {},
-        {
-            "players_team1.nick": 1,
-            "players_team2.nick": 1,
-            "players_team1.steam_id": 1,
-            "players_team2.steam_id": 1,
-            "local_team": 1,
-            "map": 1,
-        },
-    ).sort(
-        "_id", -1
-    )  # Desc.
-    matches_counter = matches.count()
-    try:
-        clan_members_ids = db._group.find_one({"_id": "clan_members"})["members"]
-    except (KeyError, TypeError):
-        clan_members_ids = list()
+    matches = db.get_all_competitive_matches_simplified()
+    matches_count = matches.count()
+    clan_members_ids = db.get_members_ids()
 
     members_in_competitives = list()
-    steam_ids_aux = list()
     maps = list()
+    steam_ids_aux = list()
     for match in matches:
         print(match)
         team_text = "players_team" + str(match["local_team"])
@@ -42,15 +25,8 @@ def update_players_found_in_competitives():
         if match["map"] not in maps:
             maps.append(match["map"])
 
-    db._group.replace_one(
-        {"_id": "members_in_competitives"},
-        {
-            "members": members_in_competitives,
-            "last_updated": datetime.now(),
-            "matches_last_update": matches_counter,
-            "maps_played": maps,
-        },
-        upsert=True,
+    db.update_group_competitive_info(
+        players=members_in_competitives, maps=maps, n_matches=matches_count
     )
 
     print(members_in_competitives)

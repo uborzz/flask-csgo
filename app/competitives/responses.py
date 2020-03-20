@@ -1,6 +1,6 @@
 """Response builders for integration with the Chrome plugin."""
 
-from flask import Response, current_app, jsonify
+from flask import Response
 import json
 from typing import Dict
 

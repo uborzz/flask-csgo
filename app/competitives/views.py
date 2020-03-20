@@ -1,4 +1,4 @@
-from flask import render_template, Response, request, current_app, jsonify
+from flask import render_template, request, current_app, jsonify
 from flask_login import login_required
 from bson import json_util
 import json

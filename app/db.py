@@ -61,6 +61,32 @@ class MongoDB:
     def get_all_competitive_matches(self) -> List[Dict]:
         return list(self._competitives.find())
 
+    def get_all_competitive_matches_simplified(self) -> List[Dict]:
+        projection = {
+            "players_team1.nick": 1,
+            "players_team2.nick": 1,
+            "players_team1.steam_id": 1,
+            "players_team2.steam_id": 1,
+            "local_team": 1,
+            "map": 1,
+        }
+        matches = db._competitives.find({}, projection).sort("_id", -1)  # Descending
+
+        result = matches if matches else list()
+        return result
+
+    def update_group_competitive_info(players, maps: List[str], n_matches: int):
+        db._group.replace_one(
+            {"_id": "members_in_competitives"},
+            {
+                "members": players,
+                "last_updated": datetime.now(),
+                "matches_last_update": n_matches,
+                "maps_played": maps,
+            },
+            upsert=True,
+        )
+
     def get_members_ids(self) -> List[int]:
         ids = self._group.find_one({"_id": "clan_members"}).get("members")
         result = ids if ids else list()
