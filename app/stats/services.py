@@ -41,7 +41,7 @@ def update_general_stats_data(app):
     for player_steam_id in members_ids:
         statistics_url = SteamURLS.PLAYER.format(steam_key, player_steam_id)
         status_url = SteamURLS.STATUS.format(steam_key, player_steam_id)
-        print(f'Getting data for {player_steam_id}')
+        print(f"Getting data for {player_steam_id}")
         try:
             r = requests.get(statistics_url)
             s = requests.get(status_url)
@@ -61,12 +61,14 @@ def update_general_stats_data(app):
                     steam_id=player_steam_id, url=player_status["profileurl"]
                 )
 
-                result = db.update_general_stats_raw(player_id=player_steam_id, data=player_data)
+                result = db.update_general_stats_raw(
+                    player_id=player_steam_id, data=player_data
+                )
                 if result:
                     transform_player_data(player_data)
 
             else:
-                print('status NOK')
+                print("status NOK")
 
         except Exception as e:
             # keep loopin

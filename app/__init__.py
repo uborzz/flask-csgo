@@ -34,7 +34,7 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(stats)
     app.register_blueprint(competitive)
-    app.register_blueprint(test)
+    app.register_blueprint(test)  # TODO delete this. Provisional.
     CORS(
         app,
         resources={r"/competitive/upload": {"origins": ["https://steamcommunity.com"]}},
