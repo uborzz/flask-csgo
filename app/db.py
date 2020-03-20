@@ -1,9 +1,10 @@
+from datetime import datetime
+from typing import List, Dict, Union
+
 from pymongo import MongoClient
 from pymongo.bulk import BulkWriteError
-from .models import User, SteamUser, CompetitiveInfo
-from datetime import datetime
 
-from typing import List, Dict, Union
+from .models import User, SteamUser, CompetitiveInfo
 
 
 class DBException(Exception):

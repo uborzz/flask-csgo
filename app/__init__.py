@@ -7,10 +7,8 @@ from .auth.flask_user import FlaskUser
 from .stats import stats
 from .competitives import competitive
 from .provisional_test import test
-
 from .stats.services import update_general_stats_data
 from .competitives.services import update_players_and_maps_found_in_competitives
-
 from .config import Config
 from .db import db
 from .scheduler import scheduler

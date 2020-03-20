@@ -1,11 +1,11 @@
-from ..db import db
-
 from datetime import datetime
-import xmltodict
-from pprint import pprint
 import requests
-
+import xmltodict
 from typing import Dict
+
+from pprint import pprint
+
+from ..db import db
 
 
 class SteamURLS:

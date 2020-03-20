@@ -1,6 +1,7 @@
-from apscheduler.schedulers.background import BackgroundScheduler
 from threading import Thread
 from typing import List, Callable
+
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 class UborzzScheduler(BackgroundScheduler):

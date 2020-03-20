@@ -4,10 +4,10 @@ from bson import json_util
 import json
 from typing import List, Dict
 
-from ..db import db, DBException
 
 from . import competitive
 from .responses import error, success
+from ..db import db, DBException
 
 
 @competitive.route("/", methods=["GET"])

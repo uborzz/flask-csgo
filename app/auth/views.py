@@ -2,12 +2,11 @@ from flask import render_template, redirect, flash, url_for
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import check_password_hash
 
+from . import auth
+from .flask_user import FlaskUser
 from .forms import LoginForm
 from ..models import User
 from ..db import db
-from app.auth.flask_user import FlaskUser
-
-from . import auth
 
 
 @auth.route("/login", methods=["GET", "POST"])

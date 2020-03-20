@@ -1,9 +1,8 @@
-from flask import render_template, Response
 from bson import json_util
-
-from ..db import db
+from flask import render_template, Response
 
 from . import stats
+from ..db import db
 
 
 @stats.route("/", methods=["GET"])
