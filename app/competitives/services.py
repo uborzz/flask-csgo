@@ -4,26 +4,7 @@ from pymongo.errors import BulkWriteError
 from datetime import datetime
 
 
-def insert_competitive_matches(matches_list):
-    for match in matches_list:
-        match["_id"] = match.pop("datetime")
-    matches_count = len(matches_list)
-    try:
-        result = db._competitives.insert_many(matches_list, ordered=False)
-        return {
-            "result": "OK",
-            "inserted": len(result.inserted_ids),
-            "total": matches_count,
-        }
-    except BulkWriteError as bwe:
-        nr_inserts = bwe.details["nInserted"]
-        return {"result": "OK", "inserted": nr_inserts, "total": matches_count}
-    except Exception as e:
-        print(type(e))
-        return {"result": "error", "description": "Insertion failed."}
-
-
-def update_dofitos_found_in_competitives():
+def update_players_found_in_competitives():
     """
     Exploramos partidas competitivas en el sistema y nos quedamos con el nick más reciente y el id_steam
     de las coincidencias con la lista de miembros del clan de steam, tengan o no abierto el perfil.

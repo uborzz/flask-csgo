@@ -9,7 +9,7 @@ from .competitives import competitive
 from .provisional_test import test
 
 from .stats.services import update_general_stats_data
-from .competitives.services import update_dofitos_found_in_competitives
+from .competitives.services import update_players_found_in_competitives
 
 from .config import Config
 from .db import db
@@ -47,7 +47,7 @@ def create_app():
 
     # task scheduler
     scheduler.new_job(update_general_stats_data, app, hours=24)
-    scheduler.new_job(update_dofitos_found_in_competitives, hours=24)
+    scheduler.new_job(update_players_found_in_competitives, hours=24)
 
     scheduler.start()
     print("▶ Scheduler running. Tasks... ▼")

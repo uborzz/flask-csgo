@@ -1,8 +1,13 @@
 from pymongo import MongoClient
+from pymongo.bulk import BulkWriteError
 from .models import User, SteamUser, CompetitiveInfo
 from datetime import datetime
 
 from typing import List, Dict, Union
+
+
+class DBException(Exception):
+    ...
 
 
 class MongoDB:
@@ -72,9 +77,7 @@ class MongoDB:
     def update_player_profile_urls(self, steam_id: int, url: str) -> bool:
         try:
             result = self._profiles.update_one(
-                {"_id": steam_id},
-                {"$addToSet": {"profile_names": url}},
-                upsert=True,
+                {"_id": steam_id}, {"$addToSet": {"profile_names": url}}, upsert=True,
             )
             return True if result.modified_count else False
         except Exception as e:
@@ -92,15 +95,25 @@ class MongoDB:
     def update_general_stats_raw(self, player_id: int, data: Dict):
         try:
             result = self._raw_stats.replace_one(
-                {"playerstats.steamID": str(player_id)},
-                data,
-                upsert=True,
+                {"playerstats.steamID": str(player_id)}, data, upsert=True,
             )
             return True if result.modified_count else False
         except Exception as e:
             print("upsert dofitos ha fallado", str(e))
 
-    # prov.
+    def insert_competitive_matches(self, matches: List[Dict]) -> int:
+        """Inserts list of competitive matches. Returns number of inserts.
+        """
+        try:
+            result = db._competitives.insert_many(matches, ordered=False)
+            return len(result.inserted_ids)
+        except BulkWriteError as bwe:
+            return bwe.details["nInserted"]
+        except Exception as e:
+            print(str(e))
+            raise DBException("Matches not inserted.")
+
+    # TODO delete this. provisional.
     def _test(self):
         now = datetime.now()
         return self._test_col.update_one(

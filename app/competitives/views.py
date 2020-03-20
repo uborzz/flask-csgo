@@ -2,11 +2,12 @@ from flask import render_template, Response, request, current_app, jsonify
 from flask_login import login_required
 from bson import json_util
 import json
+from typing import List, Dict
 
-from ..db import db
+from ..db import db, DBException
 
 from . import competitive
-from .services import insert_competitive_matches
+from .responses import error, success
 
 
 @competitive.route("/", methods=["GET"])
@@ -45,17 +46,22 @@ def upload_games():
         if request.args["password"] == current_app.config["UPLOAD_PASS"]:
             # inserta base datos
             data = json.loads(request.data)
-            result = insert_competitive_matches(data["matches"])
-            response = jsonify(result)
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            return response
+
+            matches: List[Dict] = data["matches"]
+            for match in matches:
+                match["_id"] = match.pop("datetime")
+
+            try:
+                n_inserted = db.insert_competitive_matches(matches)
+                data = {"inserted": n_inserted, "total": len(matches)}
+                return success(data=data, status_code=200)
+
+            except DBException:
+                return error("Insertion failed.", status_code=200)
+
         else:
-            return jsonify({"result": "error", "description": "pass not OK."})
+            return error("pass not OK", status_code=200)
 
     except Exception as e:
         print(str(e))
-        return Response(
-            response=json.dumps({"result": "error", "description": "Shit happend."}),
-            status=400,
-            mimetype="application/json",
-        )
+        return error("Shit happend.", 400)
