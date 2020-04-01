@@ -94,9 +94,9 @@ td {
 
 .modal-mask {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0%;
+  left: 0%;
+  /* transform: translate(-50%, -50%); */
   z-index: 9998;
   width: 100%;
   height: 100%;
@@ -117,6 +117,13 @@ td {
     margin-left: auto;
 }
 
+.modal-one-game {
+    width: 1000px;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 .modal-rady-65 {
     width: 60%;
     padding: 10px;
@@ -125,7 +132,7 @@ td {
 }
 
 .modal-rady-40 {
-    width: 40%;
+    width: 240px;
     padding: 10px;
     margin-right: auto;
     margin-left: auto;
@@ -171,9 +178,12 @@ th.active .arrow {
 
 
 .card {
-    margin: 10px;
-    padding: 10px;
-    margin-bottom: 20px;
+    margin: 6px;
+    padding: 6px;
+    margin-bottom: 15px;
+    background-color: #288da024;
+    border: 2px solid rgba(0,0,0,0.125);
+    border-radius: 1rem;
 }
 
 .card-heading {
@@ -181,11 +191,59 @@ th.active .arrow {
     margin-bottom: -15px;
 }
 
+.card-heading p {
+    margin-top: 6px;
+    margin-bottom: 0rem;
+}
+
 .card-body {
     margin-bottom: -25px;
 }
 
+.score {
+    border-radius: 20px;
+}
 
 #more-buttons {
     padding-bottom: 10px;
+}
+
+.form-control {
+    font-size: medium;
+}
+
+
+.fit thead>tr>th {
+    padding: 1px;
+}
+
+.fit tbody>tr>td {
+    padding: 3px;
+}
+
+.soft-win {
+    background-color: #9de19d;
+}
+
+.soft-tie {
+    background-color: #a5a5a5e8;
+}
+
+.soft-lose {
+    background-color: #f5b8b8;
+}
+
+.card-win {
+    background-color: #c8e6c871;
+    border-color: #9de19d;
+}
+
+.card-tie {
+    background-color: #c0bebe36;
+    border-color: #a5a5a5e8;
+}
+
+.card-lose {
+    background-color: #f3cbcb7a;
+    border-color: #f5b8b8;
 }

@@ -17,6 +17,18 @@ function filterByNames() {
 
 document.selected_games = []
 
+function generate_config_hash() {
+    let config = take_current_config()
+    let jsonified = JSON.stringify(config);
+    let encoded = btoa(jsonified)
+    return encoded
+}
+
+function generate_url_with_config() {
+    let config = generate_config_hash()
+    let url = window.location.origin + window.location.pathname + '#' + config
+    return url
+}
 
 $(document).ready(function () {
 
@@ -31,11 +43,19 @@ $(document).ready(function () {
             selected.push($(this).val());
         });
 
-        document.string_members = selected.join("|")
+        document.string_members = selected.join(",")
         $('#cont').val(document.string_members)
         filterByNames()
     });
 
+    var date_input=$('input[name="date"]'); //our date input has the name "date"
+    var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+    date_input.datepicker({
+        format: 'dd/mm/yyyy',
+        container: container,
+        todayHighlight: true,
+        autoclose: true,
+    })
 
     // -------------------------------------------------------------------
     // COMPETITIVES PAGE
@@ -53,7 +73,7 @@ $(document).ready(function () {
         });
 
         document.object_members = selected.slice(0)
-        document.string_members = selected.join("|")
+        document.string_members = selected.join(",")
         $('#cont').val(document.string_members)
 
         updateWinLossChart()
@@ -80,18 +100,34 @@ $(document).ready(function () {
         updateWinLossChart()
     })
 
+    // listen everywhere, call vue main close for modals.
+    document.onkeydown = function(evt) {
+        evt = evt || window.event;
+        var isEscape = false;
+        if ("key" in evt) {
+            isEscape = (evt.key === "Escape" || evt.key === "Esc");
+        } else {
+            isEscape = (evt.keyCode === 27);
+        }
+        if (isEscape) {
+            vm.close_stuff();
+        }
+    };
+
     var chart = createPie("chartContainer")
     chart.render();
     var chart_columns = createColumns("chartContainer2")
     chart_columns.render();
 
 
-    function updateWinLossChart() {
+    function updateWinLossChart(update_config=true) {
 
         // TARTA GRAPHIC
+        if (update_config_enabled) { save_config() }
+        // window.location.href = generate_url_with_config()
 
         if (document.string_maps && document.string_members) {
-
+            
             // Aplying filters...
             var partidas = document.partidas
 
@@ -104,10 +140,12 @@ $(document).ready(function () {
             // filtro players
             var filtradas_players = filterPlayers(filtradas_fecha)
 
+            // sorted by time
+            var sorted_games = sort_games_by_date(filtradas_players, ascending=false)
 
             // GAMES
             // for game results...
-            document.selected_games = filtradas_players
+            document.selected_games = sorted_games
             console.log("ON UPDATE", document.selected_games)
             var event = new CustomEvent('changes', { detail: { games: document.selected_games, all_players:document.players, selected_players: document.object_members } });
             document.dispatchEvent(event);
@@ -166,7 +204,7 @@ $(document).ready(function () {
         // COLUMN BAR GRAPHIC
 
         var array_por_mapas = {}
-        if (document.string_maps && document.string_members) {
+        // if (document.string_maps && document.string_members) {
             for (partida of filtradas_players) {
                 var mapa = partida['map']
                 if (!(mapa in array_por_mapas)) {
@@ -184,7 +222,7 @@ $(document).ready(function () {
                     array_por_mapas[mapa].ties++
                 }
             }
-        }
+        // }
 
         chart_columns.options.data[0].dataPoints = []
         chart_columns.options.data[1].dataPoints = []
@@ -207,12 +245,88 @@ $(document).ready(function () {
 
     }
 
+    $('#share-button').click(
+        function show_prompt_with_url() {
+            url = generate_url_with_config()
+            window.prompt("Share link. Copy to clipboard: Ctrl+C + Enter", url);
+            // }
+        }
+    )
+
     console.log("ON_READY", document.selected_games)
 
+    var update_config_enabled = false
+    load_last_config()
     initializeLists()
     updateWinLossChart()
+    var update_config_enabled = true
 
 });
+
+function take_current_config() {
+    let maps = document.string_maps
+    let players = document.string_members
+    let dates = [$("#start_date").val(), $("#end_date").val()]
+    let filter_mode = $("input[name=radio_modo]:checked").attr('id')
+    let control_mode = vm.get_mode();
+    let config = { 'players': players, 'maps': maps, 'dates': dates, 'filter': filter_mode, 'control': control_mode };
+    return config
+}
+
+function save_config() {
+    // if (document.string_maps && document.string_members) {
+        let config = take_current_config()
+        let jsonified = JSON.stringify(config);
+        localStorage.setItem('matchinegun_config', jsonified)
+    // }
+}
+
+function load_last_config() {
+    let config_in_url = window.location.hash
+    console.log('CONFIG URL', config_in_url.slice(1))
+
+    if (config_in_url != "") {
+        var config = atob(config_in_url.slice(1));
+        console.log('READ URL', config)
+    } else {
+        var config = localStorage.getItem('matchinegun_config');
+        console.log('LOCAL STRO', config)
+    }
+    try {
+        if (config) {
+            config = JSON.parse(config)
+    
+            $.each($("input[name='names_maps']"), function () {
+                if (config.maps.includes($(this).val())) {
+                    $(this).prop("checked", true)
+                }
+            });
+    
+            $.each($("input[name='names_comp']"), function () {
+                if (config.players.includes($(this).val())) {
+                    $(this).prop("checked", true)
+                }
+            });
+    
+            $("#start_date").val(config.dates[0])
+            $("#end_date").val(config.dates[1])
+    
+            const filter_mode = '#' + config.filter
+            $(filter_mode).prop("checked", true)
+
+            vm.set_mode(config.control)
+            // var event = new CustomEvent('changes', { control: config.control });
+            // document.dispatchEvent(event);
+        }
+    } catch {
+        $.each($("input[name='names_maps']"), function () {
+            $(this).prop("checked", true);
+        });
+        $.each($("input[name='names_comp']"), function () {
+            $(this).prop("checked", true);
+        });
+    }
+}
 
 function initializeLists() {
     var selected = []
@@ -227,7 +341,7 @@ function initializeLists() {
         selected.push($(this).val());
     });
     document.object_members = selected.slice(0)
-    document.string_members = selected.join(", ")
+    document.string_members = selected.join(",")
 }
 
 //function showIds() {
@@ -474,6 +588,20 @@ function filterPlayers(partidas, filterMode) {
         }
     }
     return filtradas
+}
+
+function compare_game_dates_asc( a, b ) {
+    return (Number(a._id) - Number(b._id))
+}
+function compare_game_dates_desc( a, b ) {
+    return (Number(b._id) - Number(a._id))
+}
+function sort_games_by_date(games, ascending=true) {
+    if (ascending) {
+        return games.sort(compare_game_dates_asc)
+    } else {
+        return games.sort(compare_game_dates_desc)
+    }
 }
 
 function capitalize(string) {

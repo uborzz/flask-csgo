@@ -18,11 +18,26 @@ const display_columns = {
     k: "K",
     a: "A",
     d: "D",
-    m: "mvp",
+    m: "MVP",
     h: "HS",
     s: "S",
     kdr: "KD",
     kadr: "KAD",
+}
+const help_team_columns = {
+    nick: "Player name",
+    k: "Kills",
+    a: "Assists",
+    d: "Deaths",
+    m: "MVPs (Most Valuable Player)",
+    mvp: "MVPs (Most Valuable Player)",
+    h: "Headshot Percentage",
+    hs: "Headshot Percentage",
+    s: "Score",
+    kdr: "Kill/Death Ratio",
+    kadr: "Kill+Assit/Death Ratio",
+    wr: "Win Rate (Wins / Total)",
+    wlr: "Win Rate (Wins / Wins+Loses - Ignoring Ties)",
 }
 
 // stats from filtered
@@ -53,7 +68,7 @@ const stats_display_columns = {
 
 function gameIdToDate(id) {
     const date = new Date(id);
-    const options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
+    const options = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
     return date.toLocaleDateString('en-GB', options)
 }
 
@@ -72,25 +87,38 @@ Vue.component('game', {
         }
     },
     methods: {
+        determineCardColor(result) {
+            var cls = {
+                W: "card-win",
+                T: "card-tie",
+                L: "card-lose",
+            }
+            return cls[result]
+        },
         determineColor(result) {
             var cls = {
-                W: "bg-success",
-                T: "bg-secondary",
-                L: "bg-danger",
+                W: "soft-win",
+                T: "soft-tie",
+                L: "soft-lose",
             }
             return cls[result]
         },
     },
+    filters: {
+        pretty(time_string) {
+            let time = time_string.split(':')
+            return (Number(time[0]*60) + Number(time[1]) + ' mins')
+        }
+    },
     template: `
-        <div class="card">
+        <div class="card" v-bind:class="determineCardColor(game.local_result)">
           <div class="card-heading">
             <div class="row text-center" :id="game._id">
-                <div class="col-sm-2"><h1>{{game.map}}</h1></div>
-                <div class="col-sm-3">
-                </div>
-                <div class="col-sm-2"  v-bind:class="determineColor(game.local_result)" ><h1>{{game.score_team1}} : {{game.score_team2}}</h1></div>
-                <div class="col-sm-3"><p>{{date}}</p></div>
-                <div class="col-sm-2"><p>Duration: {{game.duration}}</p></div>
+            <div class="col-sm-5"><p>{{date}}</p></div>
+            <div class="col-sm-2 score" v-bind:class="determineColor(game.local_result)" ><h1>{{game.score_team1}} : {{game.score_team2}}</h1></div>
+            <div class="col-sm-3"><h1>{{game.map}}</h1></div>
+            <div class="col-sm-2"><p>{{game.duration | pretty}}</p></div>
+                
             </div>
           </div>
           <div class="card-body">
@@ -116,25 +144,34 @@ Vue.component('game', {
 
 });
 
+
+// table th con arrow icon.
+//<th v-for="key in columns"
+//    @click="sortBy(key)"
+//    :class="{ active: sortKey == key }">
+//    <% key | display %>
+//    <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+//    </span>
+//</th>
+
 // register the grid component
 Vue.component('team', {
     template: `
-      <table>
+      <table class="fit">
         <thead>
           <tr>
             <th v-for="key in columns"
               @click="sortBy(key)"
+              v-bind:title = "key | descriptions"
               :class="{ active: sortKey == key }">
               <% key | display %>
-              <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
-              </span>
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="entry in filteredHeroes">
+          <tr v-for="entry in filteredHeroes" v-bind:title = "'Full name: ' + entry.nick">
             <td v-for="key in columns">
-              <%entry[key]%>
+              <% entry[key] | slice %>
             </td>
           </tr>
         </tbody>
@@ -162,9 +199,9 @@ Vue.component('team', {
             var heroes = this.heroes
             if (sortKey) {
                 heroes = heroes.slice().sort(function (a, b) {
-                    a = a[sortKey]
-                    b = b[sortKey]
-                    return (a === b ? 0 : a > b ? 1 : -1) * order
+                    let a_  = parseFloat(a[sortKey])
+                    let b_ = parseFloat(b[sortKey])
+                    return (a_ == b_ ? 0 : a_ > b_ ? 1 : -1) * order
                 })
             }
             return heroes
@@ -179,6 +216,24 @@ Vue.component('team', {
                 return display_columns[str]
             } else {
                 return this.capitalize(str)
+            }
+        },
+        descriptions: function (str) {
+            if (str in help_team_columns) {
+                return help_team_columns[str]
+            } else {
+                return this.capitalize(str)
+            }
+        },
+        slice: function(value) {
+            if (typeof(value) == "string") {
+                if (value.length >= 15) {
+                    return value.slice(0,12) + '...'
+                } else {
+                    return value
+                }
+            } else {
+                return value
             }
         },
     },
@@ -294,26 +349,104 @@ Vue.component('stats', {
     },
     template: `
         <div>
-            <team class="table table-striped"
+            <team class="table table-striped fit"
                 :heroes="heroes"
                 :columns="gridColumns">
             </team>
         </div>
     `
 });
-new Vue({
+
+
+Vue.component('history', {
+    props: ['games'],
+    data() {
+        var columns = ["Map", "Datetime", "Duration", "Score", "Result"]
+        return {
+            // date: gameIdToDate(this.game._id),
+            cols: columns,
+        }
+    },
+    filters: {
+        capitalize: function (str) {
+            return str.charAt(0).toUpperCase() + str.slice(1)
+        },
+    },
+    methods: {
+        idToDate: function(id) {
+            const date = new Date(id);
+            const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+            return date.toLocaleDateString('en-GB', options)
+        },
+        sortBy: function (key) {
+            this.sortKey = key
+            this.sortOrders[key] = this.sortOrders[key] * -1
+        },
+        determineColor(result) {
+            var cls = {
+                W: "card-win",
+                T: "card-tie",
+                L: "card-lose",
+            }
+            return cls[result]
+        },
+        showGame: function(game) {
+            vm.individual_game = game
+            vm.showGame = true
+        }
+    },
+    computed: {
+        sorted_games: function () {
+            var games = this.games.sort(function (a, b) {
+                return (a._id == b._id ? 0 : a._id > b._id ? 1 : -1) * -1
+            })
+            return games
+        }
+    },
+    // delimiters: ["<%", "%>"],
+    template: `
+      <table class="table">
+        <thead>
+          <tr>
+            <th v-for="key in cols">
+                {{ key }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr :class="determineColor(game.local_result)" @click="showGame(game)" v-for="game in sorted_games">
+            <td>{{ game.map }}</td>
+            <td>{{ idToDate(game._id) }}</td>
+            <td>{{ game.duration }}</td>
+            <td>{{ game.score_team1 }} : {{ game.score_team2 }}</td>
+            <td>{{ game.local_result }}</td>
+          </tr>
+        </tbody>
+      </table>
+    `,
+});
+
+//<th>Map</th>
+//<th>Date</th>
+//<th>Time</th>
+//<th>Duration</th>
+//<th>Score</th>
+//<th>Result</th>
+
+var vm = new Vue({
     el: "#root",
     delimiters: ["<%", "%>"],
     data: {
         games: [],
+        individual_game: null,
         selected_players: [],
         all_players: [],
-        showModal: false,
+        showModal: false,  // matches
         showCharts: true,
-        showMatches: false,
         showHelp: false,
         showLog: false,
         showIds: false,
+        showGame: false,
     },
     methods: {
         update_games: function (e) {
@@ -321,10 +454,49 @@ new Vue({
             //            console.log("Detail Evento (Players)", e.detail.players)
             this.games = e.detail.games
             this.selected_players = e.detail.selected_players
+        },
+        update_mode: function (e) {
+            this.set_mode(e.control)
+        },
+        set_mode: function(mode) {
+            // let current_mode = this.get_mode()
+            // if (current_mode != mode) {
+            //     save_config()
+            //     window.location.href = generate_url_with_config()
+            // }
+            if (mode == "matches") {
+                this.showCharts = false
+                this.showHelp = false
+                this.showModal = true
+            } else if (mode =="help") {
+                this.showModal = false
+                this.showCharts = false
+                this.showHelp = true
+            } else {  // mode charts
+                this.showCharts = true
+                this.showModal = false
+                this.showHelp = false
+            }
+        },
+        close_stuff() {
+            console.log("PARERRADO")
+            this.showLog = false
+            this.showIds = false
+            this.showGame = false
+        },
+        get_mode: function() {
+            if (this.showModal == true) {
+                return "matches" 
+            } else if (this.showHelp == true) {
+                return "help"
+            } else {
+                return "charts"
+            }
         }
     },
     mounted() {
         document.addEventListener('changes', this.update_games);
+        // document.addEventListener('mode', this.update_mode);
         this.all_players = document.players;
         //        document.addEventListener('createtables', this.populate_datatables);
     },
