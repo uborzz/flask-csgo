@@ -1,4 +1,4 @@
-console.log("READ SELECTED_GAMES START", document.selected_games)
+// console.log("READ SELECTED_GAMES START", document.selected_games)
 
 // matches
 const grid_columns = [
@@ -256,7 +256,7 @@ Vue.component('stats', {
     },
     computed: {
         heroes: function () {
-            console.log(this.games)
+            // console.log(this.games)
 
             var aggs_players = {}
             for (var id of this.players) {
@@ -264,16 +264,16 @@ Vue.component('stats', {
             }
 
             for (var game of this.games) {
-                console.log("GAME", game)
+                // console.log("GAME", game)
                 var game_players = [...game.players_team1, ...game.players_team2];
                 for (var player of game_players) {
-                    console.log("chekin player", player)
+                    // console.log("chekin player", player)
                     var id = player.steam_id
-                    console.log("player", id, player.nick)
+                    // console.log("player", id, player.nick)
 
                     // sums
                     if (this.players.includes(player.steam_id)) {
-                        console.log("Found!", player)
+                        // console.log("Found!", player)
                         if (!(id in aggs_players)) {
                             aggs_players[id] = {
                                 nick: player.nick,
@@ -295,7 +295,7 @@ Vue.component('stats', {
                         game.local_result == "L" && ++aggs_players[id].loses
                         game.local_result == "T" && ++aggs_players[id].ties
 
-                        console.log("actual aggs...", aggs_players)
+                        // console.log("actual aggs...", aggs_players)
                     }
                 }
             }
@@ -317,7 +317,7 @@ Vue.component('stats', {
                 player.wr = player.wins / player.games
                 player.wlr = player.wins / (player.wins + player.loses)
             }
-            console.log("PRE FORMAT", totals)
+            // console.log("PRE FORMAT", totals)
 
             // format
             for (var player of totals) {
@@ -333,7 +333,7 @@ Vue.component('stats', {
                 player.wlr = Number(player.wlr * 100).toFixed(1)
             }
 
-            console.log("RESULT", totals)
+            // console.log("RESULT", totals)
             return totals
         }
     },
@@ -481,7 +481,7 @@ var vm = new Vue({
             }
         },
         close_stuff() {
-            console.log("PARERRADO")
+            // console.log("PARERRADO")
             this.showLog = false
             this.showIds = false
             this.showGame = false

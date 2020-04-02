@@ -146,7 +146,7 @@ $(document).ready(function () {
             // GAMES
             // for game results...
             document.selected_games = sorted_games
-            console.log("ON UPDATE", document.selected_games)
+            // console.log("ON UPDATE", document.selected_games)
             var event = new CustomEvent('changes', { detail: { games: document.selected_games, all_players:document.players, selected_players: document.object_members } });
             document.dispatchEvent(event);
 
@@ -253,7 +253,7 @@ $(document).ready(function () {
         }
     )
 
-    console.log("ON_READY", document.selected_games)
+    // console.log("ON_READY", document.selected_games)
 
     var update_config_enabled = false
     load_last_config()
@@ -283,14 +283,14 @@ function save_config() {
 
 function load_last_config() {
     let config_in_url = window.location.hash
-    console.log('CONFIG URL', config_in_url.slice(1))
+    // console.log('CONFIG URL', config_in_url.slice(1))
 
     if (config_in_url != "") {
         var config = atob(config_in_url.slice(1));
-        console.log('READ URL', config)
+        // console.log('READ URL', config)
     } else {
         var config = localStorage.getItem('matchinegun_config');
-        console.log('LOCAL STRO', config)
+        // console.log('LOCAL STRO', config)
     }
     try {
         if (config) {
