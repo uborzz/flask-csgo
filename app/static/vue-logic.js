@@ -107,7 +107,9 @@ Vue.component('game', {
     filters: {
         pretty(time_string) {
             let time = time_string.split(':')
-            return (Number(time[0]*60) + Number(time[1]) + ' mins')
+            let result = Number(time[0]) ? Number(time[0])*60 : 0
+            result = result + Number(time[1]) + ' mins'
+            return result
         }
     },
     template: `
