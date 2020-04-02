@@ -1,3 +1,4 @@
+ 
 .checkbox label:after,
 .radio label:after {
     content: '';
@@ -64,6 +65,12 @@
     margin-top: 4px;
     margin-bottom: 32px;
 }
+
+
+html {
+    font-size: 10px;
+}
+
 
 body {
     font-size: 14px;
