@@ -204,7 +204,7 @@ $(document).ready(function () {
         // COLUMN BAR GRAPHIC
 
         var array_por_mapas = {}
-        // if (document.string_maps && document.string_members) {
+        if (document.string_maps && document.string_members) {
             for (partida of filtradas_players) {
                 var mapa = partida['map']
                 if (!(mapa in array_por_mapas)) {
@@ -222,7 +222,7 @@ $(document).ready(function () {
                     array_por_mapas[mapa].ties++
                 }
             }
-        // }
+        }
 
         chart_columns.options.data[0].dataPoints = []
         chart_columns.options.data[1].dataPoints = []
