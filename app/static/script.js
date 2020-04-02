@@ -508,9 +508,9 @@ function filterMaps(partidas) {
 
 
 function dateToTs(date_str, selected_included) {
-    myDate = date_str.split("-");
+    myDate = date_str.split("/");
     // console.log(myDate);
-    var newDate = myDate[1] + "/" + myDate[2] + "/" + myDate[0];
+    var newDate = myDate[1] + "/" + myDate[0] + "/" + myDate[2];
     ts = new Date(newDate).getTime();
     if (selected_included) {
         ts = ts + 24 * 3600 * 1000
