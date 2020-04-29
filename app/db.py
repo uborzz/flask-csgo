@@ -76,7 +76,7 @@ class MongoDB:
         result = matches if matches else list()
         return result
 
-    def update_group_competitive_info(players, maps: List[str], n_matches: int):
+    def update_group_competitive_info(self, players, maps: List[str], n_matches: int):
         db._group.replace_one(
             {"_id": "members_in_competitives"},
             {
@@ -90,6 +90,7 @@ class MongoDB:
 
     def get_members_ids(self) -> List[int]:
         ids = self._group.find_one({"_id": "clan_members"}).get("members")
+        print("En total", len(ids), "ids:", ids)
         result = ids if ids else list()
         return result
 

@@ -15,7 +15,6 @@ def update_players_and_maps_found_in_competitives():
     maps = list()
     steam_ids_aux = list()
     for match in matches:
-        print(match)
         team_text = "players_team" + str(match["local_team"])
         for player in match[team_text]:
             if player["steam_id"] in clan_members_ids:
